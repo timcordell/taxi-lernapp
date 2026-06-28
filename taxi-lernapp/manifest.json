@@ -1,0 +1,28 @@
+{
+  "name": "TaxiProfi – IHK-Prüfungsvorbereitung",
+  "short_name": "TaxiProfi",
+  "description": "Lernapp zur Vorbereitung auf die IHK-Prüfung für Taxiunternehmer",
+  "start_url": "/taxi-lernapp/taxi_lernapp.html",
+  "scope": "/taxi-lernapp/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#F1F5F9",
+  "theme_color": "#2563EB",
+  "lang": "de",
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["education"],
+  "screenshots": []
+}

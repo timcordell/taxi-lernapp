@@ -1,0 +1,1643 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>TaxiProfi – IHK-Prüfungsvorbereitung</title>
+
+<!-- PWA -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#2563EB">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="TaxiProfi">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<!-- PayPal SDK -->
+<script src="https://www.paypal.com/sdk/js?client-id=ARXqHfCOtR1gM_TFimSUnwf5T24poZ7qnWVD-o7clNoAEsqHPwfL0ca0EEpyjyMdvxY55P6zgF2yBe4Y&currency=EUR" defer></script>
+<style>
+/* ===== RESET & BASE ===== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+:root {
+  --primary: #2563EB;
+  --primary-light: #DBEAFE;
+  --primary-dark: #1D4ED8;
+  --success: #10B981;
+  --success-light: #D1FAE5;
+  --warning: #F59E0B;
+  --warning-light: #FEF3C7;
+  --danger: #EF4444;
+  --danger-light: #FEE2E2;
+  --gray-50: #F9FAFB;
+  --gray-100: #F3F4F6;
+  --gray-200: #E5E7EB;
+  --gray-300: #D1D5DB;
+  --gray-400: #9CA3AF;
+  --gray-500: #6B7280;
+  --gray-600: #4B5563;
+  --gray-700: #374151;
+  --gray-800: #1F2937;
+  --gray-900: #111827;
+  --white: #FFFFFF;
+  --bg: #F1F5F9;
+  --card-shadow: 0 1px 3px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.06);
+  --card-shadow-lg: 0 4px 6px rgba(0,0,0,0.07), 0 2px 4px rgba(0,0,0,0.06);
+  --radius: 16px;
+  --radius-sm: 10px;
+  --radius-xs: 8px;
+  --nav-h: 68px;
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+html { height: 100%; }
+body {
+  font-family: -apple-system, 'SF Pro Display', 'Segoe UI', Arial, sans-serif;
+  background: var(--bg);
+  color: var(--gray-800);
+  font-size: 15px;
+  line-height: 1.5;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* ===== APP SHELL ===== */
+#app {
+  max-width: 430px;
+  margin: 0 auto;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+  background: var(--bg);
+}
+
+
+/* ===== SCREENS ===== */
+.screens {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+  padding-bottom: calc(var(--nav-h) + var(--safe-bottom) + 8px);
+}
+.screen { display: none; animation: fadeIn 0.25s ease; }
+.screen.active { display: block; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ===== BOTTOM NAV ===== */
+.bottom-nav {
+  height: calc(var(--nav-h) + var(--safe-bottom));
+  padding-bottom: var(--safe-bottom);
+  background: var(--white);
+  border-top: 1px solid var(--gray-200);
+  display: flex;
+  align-items: flex-start;
+  box-shadow: 0 -2px 12px rgba(0,0,0,0.08);
+  position: relative;
+  z-index: 100;
+  flex-shrink: 0;
+}
+.nav-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  padding: 10px 4px 4px;
+  cursor: pointer;
+  border: none;
+  background: none;
+  color: var(--gray-400);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+  transition: color 0.2s;
+}
+.nav-item.active { color: var(--primary); }
+.nav-item svg { width: 24px; height: 24px; }
+.nav-dot {
+  width: 5px; height: 5px; border-radius: 50%;
+  background: var(--primary);
+  margin-top: -2px;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.nav-item.active .nav-dot { opacity: 1; }
+
+/* ===== SECTION HEADER ===== */
+.screen-header {
+  padding: 20px 20px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.screen-title {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--gray-900);
+  letter-spacing: -0.5px;
+}
+
+/* ===== CARDS ===== */
+.card {
+  background: var(--white);
+  border-radius: var(--radius);
+  padding: 18px;
+  box-shadow: var(--card-shadow);
+}
+.card-lg { padding: 22px; }
+
+/* ===== PROGRESS RING ===== */
+.ring-wrap { position: relative; display: inline-flex; align-items: center; justify-content: center; }
+.ring-label {
+  position: absolute;
+  text-align: center;
+}
+.ring-label .pct { font-size: 22px; font-weight: 800; color: var(--gray-900); }
+.ring-label .sub { font-size: 10px; color: var(--gray-500); font-weight: 600; text-transform: uppercase; }
+
+/* ===== PILL BADGE ===== */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border-radius: 99px;
+  font-size: 12px;
+  font-weight: 700;
+}
+.pill-blue { background: var(--primary-light); color: var(--primary); }
+.pill-green { background: var(--success-light); color: var(--success); }
+.pill-yellow { background: var(--warning-light); color: #92400E; }
+.pill-red { background: var(--danger-light); color: var(--danger); }
+
+/* ===== BUTTONS ===== */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s;
+  padding: 14px 20px;
+  line-height: 1;
+}
+.btn:active { transform: scale(0.97); }
+.btn-primary { background: var(--primary); color: white; box-shadow: 0 4px 14px rgba(37,99,235,0.4); }
+.btn-primary:hover { background: var(--primary-dark); }
+.btn-success { background: var(--success); color: white; box-shadow: 0 4px 14px rgba(16,185,129,0.35); }
+.btn-outline { background: white; color: var(--primary); border: 2px solid var(--primary); }
+.btn-ghost { background: var(--gray-100); color: var(--gray-700); }
+.btn-full { width: 100%; }
+.btn-lg { font-size: 17px; padding: 16px 24px; border-radius: var(--radius); }
+
+/* ===== PROGRESS BAR ===== */
+.pbar-wrap { height: 8px; background: var(--gray-200); border-radius: 99px; overflow: hidden; }
+.pbar-fill { height: 100%; border-radius: 99px; transition: width 0.6s ease; }
+
+/* ===== HOME SCREEN ===== */
+.home-hero {
+  background: linear-gradient(135deg, #1E40AF 0%, #2563EB 50%, #3B82F6 100%);
+  padding: 28px 20px 32px;
+  color: white;
+  position: relative;
+  overflow: hidden;
+}
+.home-hero::after {
+  content: '🚕';
+  position: absolute;
+  font-size: 100px;
+  right: -10px;
+  top: -10px;
+  opacity: 0.15;
+}
+.home-greeting { font-size: 13px; font-weight: 600; opacity: 0.8; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+.home-title { font-size: 26px; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 16px; }
+.hero-stats { display: flex; gap: 12px; }
+.hero-stat {
+  background: rgba(255,255,255,0.15);
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  flex: 1;
+  backdrop-filter: blur(10px);
+}
+.hero-stat .val { font-size: 20px; font-weight: 800; }
+.hero-stat .lbl { font-size: 11px; opacity: 0.8; font-weight: 600; text-transform: uppercase; letter-spacing: 0.3px; }
+
+.home-section { padding: 0 16px; margin-top: 20px; }
+.home-section-title { font-size: 13px; font-weight: 700; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px; }
+
+/* Streak card */
+.streak-card {
+  background: linear-gradient(135deg, #FEF3C7, #FDE68A);
+  border-radius: var(--radius);
+  padding: 16px 18px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.streak-fire { font-size: 36px; }
+.streak-val { font-size: 28px; font-weight: 800; color: #92400E; }
+.streak-lbl { font-size: 13px; color: #92400E; font-weight: 600; }
+.streak-sub { font-size: 12px; color: #A16207; margin-top: 2px; }
+
+/* Daily goal */
+.daily-card {
+  background: white;
+  border-radius: var(--radius);
+  padding: 16px 18px;
+  box-shadow: var(--card-shadow);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.daily-info { flex: 1; }
+.daily-title { font-size: 15px; font-weight: 700; color: var(--gray-800); margin-bottom: 6px; }
+.daily-sub { font-size: 12px; color: var(--gray-500); margin-bottom: 10px; }
+
+/* Quick actions */
+.quick-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.quick-card {
+  background: white;
+  border-radius: var(--radius);
+  padding: 16px;
+  box-shadow: var(--card-shadow);
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s;
+  border: none;
+  text-align: left;
+}
+.quick-card:active { transform: scale(0.97); }
+.quick-card .q-icon { font-size: 28px; margin-bottom: 8px; display: block; }
+.quick-card .q-title { font-size: 14px; font-weight: 700; color: var(--gray-800); }
+.quick-card .q-sub { font-size: 12px; color: var(--gray-500); margin-top: 2px; }
+.quick-card.accent { background: var(--primary); }
+.quick-card.accent .q-title, .quick-card.accent .q-sub { color: white; }
+
+/* ===== LERNEN SCREEN ===== */
+.topic-grid { display: grid; gap: 10px; padding: 16px; }
+.topic-card {
+  background: white;
+  border-radius: var(--radius);
+  padding: 16px 18px;
+  box-shadow: var(--card-shadow);
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s;
+  border: none;
+  width: 100%;
+  text-align: left;
+}
+.topic-card:active { transform: scale(0.98); box-shadow: var(--card-shadow-lg); }
+.topic-icon-wrap {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  flex-shrink: 0;
+}
+.topic-info { flex: 1; min-width: 0; }
+.topic-name { font-size: 15px; font-weight: 700; color: var(--gray-800); margin-bottom: 2px; }
+.topic-desc { font-size: 12px; color: var(--gray-500); margin-bottom: 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.topic-meta { display: flex; align-items: center; gap: 8px; }
+.topic-count { font-size: 11px; font-weight: 600; color: var(--gray-400); }
+.topic-score { font-size: 12px; font-weight: 700; }
+.topic-arrow { color: var(--gray-300); flex-shrink: 0; }
+.topic-arrow svg { width: 18px; height: 18px; }
+
+/* ===== QUIZ SCREEN ===== */
+#screen-quiz { min-height: calc(100vh - var(--nav-h)); }
+
+.quiz-header {
+  padding: 16px 20px 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.quiz-back {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: var(--white);
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--card-shadow);
+  color: var(--gray-700);
+  flex-shrink: 0;
+}
+.quiz-back svg { width: 20px; height: 20px; }
+.quiz-top-info { flex: 1; }
+.quiz-topic-badge { font-size: 12px; font-weight: 700; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.3px; }
+.quiz-counter-text { font-size: 13px; font-weight: 600; color: var(--gray-600); margin-top: 1px; }
+.quiz-correct-badge {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: var(--success-light);
+  color: var(--success);
+  padding: 5px 10px;
+  border-radius: 99px;
+  font-size: 13px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.quiz-progress-bar {
+  height: 4px;
+  background: var(--gray-200);
+  margin: 0 20px 16px;
+  border-radius: 2px;
+  overflow: hidden;
+}
+.quiz-progress-fill { height: 100%; background: var(--primary); border-radius: 2px; transition: width 0.4s ease; }
+
+.quiz-card-wrap { padding: 0 16px; }
+.quiz-question-card {
+  background: white;
+  border-radius: 20px;
+  padding: 24px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+  min-height: 130px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+.quiz-question-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 4px;
+  background: var(--primary);
+}
+.quiz-thema-label { font-size: 11px; font-weight: 700; color: var(--primary); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px; }
+.quiz-q-text { font-size: 17px; font-weight: 700; color: var(--gray-900); line-height: 1.45; }
+
+.quiz-options-wrap { padding: 14px 16px 0; display: flex; flex-direction: column; gap: 10px; }
+.quiz-opt-btn {
+  background: white;
+  border: 2px solid var(--gray-200);
+  border-radius: var(--radius-sm);
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: left;
+  width: 100%;
+  box-shadow: var(--card-shadow);
+}
+.quiz-opt-btn:active:not(:disabled) { transform: scale(0.98); }
+.quiz-opt-btn:hover:not(:disabled) { border-color: var(--primary); background: var(--primary-light); }
+.opt-letter {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  background: var(--gray-100);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--gray-600);
+  flex-shrink: 0;
+}
+.opt-text { font-size: 14px; font-weight: 600; color: var(--gray-700); line-height: 1.4; }
+
+.quiz-opt-btn.correct { border-color: var(--success); background: var(--success-light); }
+.quiz-opt-btn.correct .opt-letter { background: var(--success); color: white; }
+.quiz-opt-btn.correct .opt-text { color: #065F46; }
+.quiz-opt-btn.wrong { border-color: var(--danger); background: var(--danger-light); }
+.quiz-opt-btn.wrong .opt-letter { background: var(--danger); color: white; }
+.quiz-opt-btn.wrong .opt-text { color: #991B1B; }
+
+.quiz-feedback-panel {
+  margin: 14px 16px 0;
+  padding: 14px 16px;
+  border-radius: var(--radius-sm);
+  display: none;
+  font-size: 14px;
+  line-height: 1.5;
+}
+.quiz-feedback-panel.show { display: block; animation: fadeIn 0.2s ease; }
+.quiz-feedback-panel.correct { background: var(--success-light); color: #065F46; border-left: 4px solid var(--success); }
+.quiz-feedback-panel.wrong { background: var(--danger-light); color: #991B1B; border-left: 4px solid var(--danger); }
+.feedback-head { font-weight: 800; font-size: 15px; margin-bottom: 4px; }
+
+.quiz-next-btn-wrap { padding: 16px 16px 8px; }
+
+/* ===== QUIZ START SCREEN ===== */
+.quiz-start-wrap { padding: 20px 16px; }
+.quiz-start-hero {
+  background: linear-gradient(135deg, #1E40AF, #3B82F6);
+  border-radius: 20px;
+  padding: 28px 24px;
+  color: white;
+  text-align: center;
+  margin-bottom: 20px;
+}
+.quiz-start-icon { font-size: 48px; margin-bottom: 12px; }
+.quiz-start-title { font-size: 22px; font-weight: 800; margin-bottom: 6px; }
+.quiz-start-sub { font-size: 14px; opacity: 0.85; margin-bottom: 20px; }
+.quiz-mode-grid { display: grid; gap: 10px; }
+.quiz-mode-btn {
+  background: white;
+  border: 2px solid var(--gray-200);
+  border-radius: var(--radius-sm);
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: left;
+  width: 100%;
+}
+.quiz-mode-btn:active { transform: scale(0.98); }
+.quiz-mode-btn:hover { border-color: var(--primary); }
+.qm-icon { font-size: 26px; flex-shrink: 0; }
+.qm-title { font-size: 15px; font-weight: 700; color: var(--gray-800); }
+.qm-sub { font-size: 12px; color: var(--gray-500); margin-top: 1px; }
+.qm-arrow { margin-left: auto; color: var(--gray-400); }
+
+/* ===== RESULT SCREEN ===== */
+.result-wrap { padding: 20px 16px; }
+.result-hero {
+  background: white;
+  border-radius: 20px;
+  padding: 28px 24px;
+  text-align: center;
+  box-shadow: var(--card-shadow-lg);
+  margin-bottom: 16px;
+}
+.result-emoji { font-size: 56px; margin-bottom: 12px; }
+.result-pct { font-size: 56px; font-weight: 900; letter-spacing: -2px; margin-bottom: 4px; }
+.result-pct.good { color: var(--success); }
+.result-pct.mid { color: var(--warning); }
+.result-pct.bad { color: var(--danger); }
+.result-label { font-size: 20px; font-weight: 800; color: var(--gray-800); margin-bottom: 6px; }
+.result-sub { font-size: 14px; color: var(--gray-500); }
+
+.result-stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 16px 0; }
+.result-stat-card { background: var(--gray-50); border-radius: var(--radius-sm); padding: 14px; text-align: center; }
+.result-stat-card .rv { font-size: 22px; font-weight: 800; }
+.result-stat-card .rl { font-size: 12px; color: var(--gray-500); font-weight: 600; margin-top: 2px; }
+
+.weak-card {
+  background: var(--danger-light);
+  border-radius: var(--radius);
+  padding: 16px 18px;
+  margin-bottom: 12px;
+}
+.weak-title { font-size: 14px; font-weight: 700; color: var(--danger); margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+.weak-list { font-size: 14px; color: #7F1D1D; }
+.weak-list li { margin-bottom: 4px; list-style: none; display: flex; gap: 6px; }
+
+.result-btn-row { display: flex; gap: 10px; margin-top: 16px; }
+
+/* ===== STATS SCREEN ===== */
+.stats-hero {
+  background: linear-gradient(135deg, #065F46, #10B981);
+  padding: 24px 20px;
+  color: white;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+.stats-ring-wrap { flex-shrink: 0; }
+.stats-ring-text { }
+.stats-ring-pct { font-size: 32px; font-weight: 900; }
+.stats-ring-lbl { font-size: 13px; opacity: 0.85; }
+.stats-hero-info { flex: 1; }
+.stats-hero-title { font-size: 20px; font-weight: 800; margin-bottom: 12px; }
+.stats-mini-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.stats-mini-card { background: rgba(255,255,255,0.15); border-radius: var(--radius-xs); padding: 8px 10px; }
+.stats-mini-val { font-size: 16px; font-weight: 800; }
+.stats-mini-lbl { font-size: 10px; opacity: 0.8; font-weight: 600; text-transform: uppercase; letter-spacing: 0.3px; }
+
+.stats-topic-row {
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--gray-100);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.stats-topic-icon { font-size: 20px; flex-shrink: 0; width: 28px; text-align: center; }
+.stats-topic-info { flex: 1; min-width: 0; }
+.stats-topic-name { font-size: 14px; font-weight: 600; color: var(--gray-800); margin-bottom: 5px; }
+.stats-topic-score { font-size: 12px; font-weight: 700; flex-shrink: 0; }
+
+/* ===== UEBUNGEN SCREEN ===== */
+.exam-info-card {
+  background: white;
+  border-radius: var(--radius);
+  padding: 18px;
+  box-shadow: var(--card-shadow);
+  margin: 0 16px 12px;
+}
+.exam-info-title { font-size: 15px; font-weight: 700; color: var(--gray-800); margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+.exam-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--gray-100); font-size: 14px; }
+.exam-row:last-child { border-bottom: none; }
+.exam-row-key { color: var(--gray-600); }
+.exam-row-val { font-weight: 700; color: var(--gray-800); }
+
+/* ===== EMPTY / PLACEHOLDER ===== */
+.empty-state { text-align: center; padding: 48px 24px; }
+.empty-icon { font-size: 48px; margin-bottom: 12px; }
+.empty-title { font-size: 18px; font-weight: 700; color: var(--gray-700); margin-bottom: 6px; }
+.empty-sub { font-size: 14px; color: var(--gray-500); }
+
+/* ===== XP TOAST ===== */
+.xp-toast {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-80px);
+  background: var(--gray-900);
+  color: white;
+  padding: 10px 20px;
+  border-radius: 99px;
+  font-size: 14px;
+  font-weight: 700;
+  z-index: 1000;
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  white-space: nowrap;
+}
+.xp-toast.show { transform: translateX(-50%) translateY(0); }
+
+/* ===== MISC ===== */
+.divider { height: 1px; background: var(--gray-100); margin: 4px 0; }
+.spacer-sm { height: 8px; }
+.spacer { height: 16px; }
+.spacer-lg { height: 24px; }
+
+.info-banner {
+  background: var(--primary-light);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  font-size: 13px;
+  color: #1E40AF;
+  display: flex;
+  gap: 8px;
+}
+
+@media (max-width: 380px) {
+  .hero-stat .val { font-size: 17px; }
+  .quick-card { padding: 13px; }
+}
+</style>
+</head>
+<body>
+
+
+
+<div id="app">
+  <!-- XP Toast -->
+  <div class="xp-toast" id="xpToast">+10 XP ⭐</div>
+
+  <!-- SCREENS -->
+  <div class="screens">
+
+    <!-- ===== HOME ===== -->
+    <div class="screen active" id="screen-home">
+      <div class="home-hero">
+        <div class="home-greeting" id="greeting">Guten Morgen</div>
+        <div class="home-title">TaxiProfi 🚕</div>
+        <div class="hero-stats">
+          <div class="hero-stat">
+            <div class="val" id="hero-total-pct">0%</div>
+            <div class="lbl">Gesamt</div>
+          </div>
+          <div class="hero-stat">
+            <div class="val" id="hero-streak">0</div>
+            <div class="lbl">Tage Streak</div>
+          </div>
+          <div class="hero-stat">
+            <div class="val" id="hero-xp">0</div>
+            <div class="lbl">XP Punkte</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="home-section">
+        <div class="home-section-title">Tagessträhne</div>
+        <div class="streak-card">
+          <div class="streak-fire">🔥</div>
+          <div>
+            <div class="streak-val" id="streak-val">0 Tage</div>
+            <div class="streak-lbl">Lernsträhne</div>
+            <div class="streak-sub" id="streak-sub">Heute noch nichts gelernt – fang an!</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="home-section">
+        <div class="home-section-title">Tagesziel</div>
+        <div class="daily-card">
+          <div class="daily-info">
+            <div class="daily-title">10 Fragen täglich</div>
+            <div class="daily-sub" id="daily-sub-text">Heute noch 10 Fragen offen</div>
+            <div class="pbar-wrap">
+              <div class="pbar-fill" id="daily-bar" style="width:0%; background: var(--primary);"></div>
+            </div>
+          </div>
+          <div style="font-size:28px" id="daily-icon">📚</div>
+        </div>
+      </div>
+
+      <div class="home-section">
+        <div class="home-section-title">Schnellstart</div>
+        <div class="quick-grid">
+          <button class="quick-card accent" onclick="startQuiz('alle')">
+            <span class="q-icon">🎯</span>
+            <div class="q-title">Alle Themen</div>
+            <div class="q-sub">Gemischter Test</div>
+          </button>
+          <button class="quick-card" onclick="startWeakQuiz()">
+            <span class="q-icon">💪</span>
+            <div class="q-title">Schwächen üben</div>
+            <div class="q-sub">Gezielte Wiederholung</div>
+          </button>
+          <button class="quick-card" onclick="showScreen('lernen')">
+            <span class="q-icon">📚</span>
+            <div class="q-title">Nach Thema</div>
+            <div class="q-sub">Gezielt lernen</div>
+          </button>
+          <button class="quick-card" onclick="showScreen('uebungen')">
+            <span class="q-icon">📋</span>
+            <div class="q-title">Prüfungsinfos</div>
+            <div class="q-sub">IHK-Überblick</div>
+          </button>
+        </div>
+      </div>
+
+      <div class="home-section">
+        <div class="home-section-title">Lernthemen</div>
+        <div id="home-topics"></div>
+      </div>
+
+      <div style="text-align:center;padding:16px 0 8px;font-size:12px;color:var(--gray-400)">
+        <a href="#" onclick="renderImpressum();return false;" style="color:var(--gray-400);text-decoration:underline;margin-right:12px">Impressum</a>
+        <a href="#" onclick="renderDatenschutz();return false;" style="color:var(--gray-400);text-decoration:underline">Datenschutz</a>
+      </div>
+      <div class="spacer-lg"></div>
+    </div>
+
+    <!-- ===== LERNEN ===== -->
+    <div class="screen" id="screen-lernen">
+      <div class="screen-header" style="padding-top:24px; padding-bottom:16px;">
+        <div class="screen-title">Lernthemen</div>
+        <span class="pill pill-blue" id="lernen-count">22 Fragen</span>
+      </div>
+      <div class="topic-grid" id="topicGrid"></div>
+      <div class="spacer-lg"></div>
+    </div>
+
+    <!-- ===== QUIZ ===== -->
+    <div class="screen" id="screen-quiz">
+      <div id="quizContent"></div>
+    </div>
+
+    <!-- ===== STATS ===== -->
+    <div class="screen" id="screen-stats">
+      <div class="stats-hero">
+        <div class="stats-hero-info">
+          <div class="stats-hero-title">Deine Statistiken</div>
+          <div class="stats-mini-grid">
+            <div class="stats-mini-card">
+              <div class="stats-mini-val" id="stat-correct">0</div>
+              <div class="stats-mini-lbl">Richtig</div>
+            </div>
+            <div class="stats-mini-card">
+              <div class="stats-mini-val" id="stat-total-ans">0</div>
+              <div class="stats-mini-lbl">Beantwortet</div>
+            </div>
+            <div class="stats-mini-card">
+              <div class="stats-mini-val" id="stat-sessions">0</div>
+              <div class="stats-mini-lbl">Sessions</div>
+            </div>
+            <div class="stats-mini-card">
+              <div class="stats-mini-val" id="stat-xp-stat">0</div>
+              <div class="stats-mini-lbl">XP</div>
+            </div>
+          </div>
+        </div>
+        <div style="text-align:center; color:white;">
+          <div style="font-size:42px; font-weight:900;" id="stat-pct-big">0%</div>
+          <div style="font-size:11px; opacity:0.8; font-weight:600; text-transform:uppercase;">Gesamtergebnis</div>
+        </div>
+      </div>
+
+      <div class="spacer"></div>
+      <div style="padding: 0 16px 8px;">
+        <div class="screen-title" style="font-size:17px;">Themenübersicht</div>
+      </div>
+      <div class="card" style="margin: 0 16px; padding: 0; overflow:hidden;">
+        <div id="statsTopicList"></div>
+      </div>
+      <div class="spacer-lg"></div>
+    </div>
+
+    <!-- ===== ÜBUNGEN / INFOS ===== -->
+    <div class="screen" id="screen-uebungen">
+      <div class="screen-header" style="padding-top:24px; padding-bottom:16px;">
+        <div class="screen-title">Prüfungsinfos</div>
+      </div>
+
+      <div class="exam-info-card">
+        <div class="exam-info-title">📋 IHK-Fachkundeprüfung</div>
+        <div class="exam-row"><span class="exam-row-key">Prüfungstyp</span><span class="exam-row-val">Schriftlich + Mündlich</span></div>
+        <div class="exam-row"><span class="exam-row-key">Teil 1 (schriftl.)</span><span class="exam-row-val">60 Minuten</span></div>
+        <div class="exam-row"><span class="exam-row-key">Teil 2 (schriftl.)</span><span class="exam-row-val">60 Minuten</span></div>
+        <div class="exam-row"><span class="exam-row-key">Mündliche Prüfung</span><span class="exam-row-val">max. 30 Minuten</span></div>
+        <div class="exam-row"><span class="exam-row-key">Prüfungsgebühr</span><span class="exam-row-val">ca. 150–200 €</span></div>
+        <div class="exam-row"><span class="exam-row-key">Anmeldung bei</span><span class="exam-row-val">Zuständige IHK</span></div>
+      </div>
+
+      <div class="exam-info-card">
+        <div class="exam-info-title">🎓 Prüfungsthemen</div>
+        <div class="exam-row"><span class="exam-row-key">1. Recht & Gesetze</span><span class="pill pill-blue">PBefG, BOKraft</span></div>
+        <div class="exam-row"><span class="exam-row-key">2. Kaufmänn. Führung</span><span class="pill pill-blue">Kalkulation, Steuern</span></div>
+        <div class="exam-row"><span class="exam-row-key">3. Fahrzeug & Technik</span><span class="pill pill-blue">TÜV, Taxameter</span></div>
+        <div class="exam-row"><span class="exam-row-key">4. Straßenverkehr</span><span class="pill pill-blue">StVO, Lenk-/Ruhezeiten</span></div>
+        <div class="exam-row"><span class="exam-row-key">5. Versicherung & Soziales</span><span class="pill pill-blue">BG, Sozialversich.</span></div>
+        <div class="exam-row"><span class="exam-row-key">6. EU & International</span><span class="pill pill-blue">EU-Vorschriften</span></div>
+      </div>
+
+      <div class="exam-info-card">
+        <div class="exam-info-title">🪪 Voraussetzungen</div>
+        <div class="exam-row"><span class="exam-row-key">Mindestalter</span><span class="exam-row-val">21 Jahre</span></div>
+        <div class="exam-row"><span class="exam-row-key">Eigenkapital (1. Taxi)</span><span class="exam-row-val">min. 2.250 €</span></div>
+        <div class="exam-row"><span class="exam-row-key">Eigenkapital (jedes weitere)</span><span class="exam-row-val">+1.250 €</span></div>
+        <div class="exam-row"><span class="exam-row-key">Genehmigungsdauer</span><span class="exam-row-val">max. 5 Jahre</span></div>
+        <div class="exam-row"><span class="exam-row-key">Genehmigungsbehörde</span><span class="exam-row-val">Straßenverkehrsamt</span></div>
+      </div>
+
+      <div class="exam-info-card">
+        <div class="exam-info-title">💡 Lerntipps</div>
+        <div style="display:grid;gap:10px;font-size:14px;color:var(--gray-700);">
+          <div style="display:flex;gap:10px;"><span>⏱️</span><span>Täglich 45–60 Min. reichen für 6–8 Wochen Vorbereitung.</span></div>
+          <div style="display:flex;gap:10px;"><span>📖</span><span>IHK-Orientierungsrahmen kostenlos bei deiner IHK anfordern.</span></div>
+          <div style="display:flex;gap:10px;"><span>🔢</span><span>Rechenaufgaben üben: Kosten pro km, Umsatzsteuer, Kalkulationen.</span></div>
+          <div style="display:flex;gap:10px;"><span>🗣️</span><span>Für die mündliche Prüfung: Laut erklären üben, nicht nur lesen.</span></div>
+          <div style="display:flex;gap:10px;"><span>🔁</span><span>Schwache Themen täglich wiederholen – Spaced Repetition!</span></div>
+        </div>
+      </div>
+
+      <div class="spacer-lg"></div>
+    </div>
+
+  </div><!-- /screens -->
+
+  <!-- BOTTOM NAV -->
+  <nav class="bottom-nav">
+    <button class="nav-item active" id="nav-home" onclick="showScreen('home')">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+      Start
+      <div class="nav-dot"></div>
+    </button>
+    <button class="nav-item" id="nav-lernen" onclick="showScreen('lernen')">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3zM5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82z"/></svg>
+      Lernen
+      <div class="nav-dot"></div>
+    </button>
+    <button class="nav-item" id="nav-quiz" onclick="showScreen('quiz')">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"/></svg>
+      Quiz
+      <div class="nav-dot"></div>
+    </button>
+    <button class="nav-item" id="nav-stats" onclick="showScreen('stats')">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>
+      Statistik
+      <div class="nav-dot"></div>
+    </button>
+    <button class="nav-item" id="nav-uebungen" onclick="showScreen('uebungen')">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+      Info
+      <div class="nav-dot"></div>
+    </button>
+  </nav>
+</div>
+
+<script>
+// =====================================================
+// DATA
+// =====================================================
+const THEMEN = [
+  { id:'recht',         icon:'⚖️',  name:'Recht & Gesetze',          desc:'PBefG, BOKraft, Arbeitsrecht',     color:'#2563EB', bg:'#DBEAFE' },
+  { id:'kaufmaennisch', icon:'💼',  name:'Kaufmännische Führung',      desc:'Kalkulation, Steuern, Buchhaltung',color:'#7C3AED', bg:'#EDE9FE' },
+  { id:'technik',       icon:'🔧',  name:'Fahrzeug & Technik',         desc:'Zulassung, TÜV, Ausrüstung',      color:'#D97706', bg:'#FEF3C7' },
+  { id:'verkehr',       icon:'🚦',  name:'Straßenverkehr & Sicherheit', desc:'StVO, Lenk- und Ruhezeiten',      color:'#DC2626', bg:'#FEE2E2' },
+  { id:'sozial',        icon:'🛡️', name:'Versicherung & Soziales',     desc:'KFZ-Versicherung, Sozialversich.', color:'#059669', bg:'#D1FAE5' },
+  { id:'eu',            icon:'🌍',  name:'EU & Internationale Regeln',  desc:'EU-Vorschriften, Kabotage',        color:'#D97706', bg:'#FEF3C7' }
+];
+
+const FRAGEN = [
+  // RECHT (10 Fragen)
+  { thema:'recht', frage:'Welches Gesetz regelt die Beförderung von Fahrgästen mit Taxis in Deutschland?',
+    optionen:['Das Personenbeförderungsgesetz (PBefG)','Die Straßenverkehrsordnung (StVO)','Das Handelsgesetzbuch (HGB)','Die BOKraft'],
+    richtig:0, erklaerung:'Das PBefG ist das Kerngesetz für Taxiunternehmer. Es regelt, wer Fahrgäste befördern darf und welche Genehmigungen nötig sind.' },
+  { thema:'recht', frage:'Was ist die BOKraft?',
+    optionen:['Die Verordnung über den Betrieb von Kraftfahrunternehmen im Personenverkehr','Das Gesetz über Kraftfahrzeugsteuer','Eine EU-Verordnung für internationale Transporte','Ein Tarifvertrag für Taxifahrer'],
+    richtig:0, erklaerung:'Die BOKraft regelt die genauen Betriebspflichten: Fahrzeugausstattung, Beförderungspflicht, Sicherheitsvorschriften usw.' },
+  { thema:'recht', frage:'Welche Behörde erteilt die Genehmigung (Konzession) für einen Taxibetrieb?',
+    optionen:['Die Genehmigungsbehörde (z.B. Straßenverkehrsamt)','Die IHK','Das Finanzamt','Der TÜV'],
+    richtig:0, erklaerung:'Die Konzession erteilt die Genehmigungsbehörde (Straßenverkehrsamt oder Ordnungsamt) – nicht die IHK!' },
+  { thema:'recht', frage:'Wie lange ist eine Taxigenehmigung in der Regel maximal gültig?',
+    optionen:['5 Jahre','10 Jahre','1 Jahr','Unbegrenzt'],
+    richtig:0, erklaerung:'Nach § 13 PBefG werden Taxigenehmigungen für maximal 5 Jahre erteilt und müssen dann verlängert werden.' },
+  { thema:'recht', frage:'Was bedeutet Beförderungspflicht bei Taxis?',
+    optionen:['Ein Taxi muss Fahrgäste im Pflichtfahrgebiet mitnehmen','Der Fahrgast muss immer zahlen','Das Taxi muss immer am Stand stehen','Der Fahrer muss Routen vorschlagen'],
+    richtig:0, erklaerung:'Taxis unterliegen der Beförderungspflicht: Sie müssen Fahrgäste im Pflichtfahrgebiet befördern – außer bei gesetzlichen Ausnahmen (z.B. kein Platz).' },
+  { thema:'recht', frage:'Was ist das Pflichtfahrgebiet beim Taxi?',
+    optionen:['Der Bereich, in dem das Taxi fahren muss, wenn es bestellt wird','Das Gebiet, in dem Taxis am günstigsten sind','Die Zone mit freier Preisgestaltung','Das Gebiet außerhalb der Stadtgrenzen'],
+    richtig:0, erklaerung:'Das Pflichtfahrgebiet ist das festgelegte Einsatzgebiet des Taxis (meist die Stadt/Gemeinde). Innerhalb muss das Taxi Fahrten annehmen.' },
+  { thema:'recht', frage:'Welches Mindestalter ist für Taxiunternehmer grundsätzlich vorgeschrieben?',
+    optionen:['21 Jahre','18 Jahre','25 Jahre','Kein Mindestalter'],
+    richtig:0, erklaerung:'Das PBefG sieht grundsätzlich 21 Jahre als Mindestalter vor – in einzelnen Bundesländern kann es Abweichungen geben.' },
+  { thema:'recht', frage:'Was ist die Berufszugangsverordnung (PBZugV)?',
+    optionen:['Regelt die Voraussetzungen für den Zugang zum Personenbeförderungsgewerbe','Legt Tarife für Taxifahrten fest','Regelt die Fahrzeugzulassung','Bestimmt die Prüfungsgebühren'],
+    richtig:0, erklaerung:'Die PBZugV (Berufszugangsverordnung für den Straßenpersonenverkehr) legt fest, welche Anforderungen Taxiunternehmer an persönlicher, finanzieller und fachlicher Eignung erfüllen müssen.' },
+  { thema:'recht', frage:'Was bedeutet persönliche Zuverlässigkeit für einen Taxiunternehmer?',
+    optionen:['Keine schwerwiegenden Verurteilungen, keine Insolvenz, keine schweren Verkehrsverstöße','Mindestens 5 Jahre Berufserfahrung als Fahrer','Besitz eines Meisterbriefs','Mitgliedschaft in einem Berufsverband'],
+    richtig:0, erklaerung:'Persönliche Zuverlässigkeit bedeutet: kein Betrug, keine Gewaltdelikte, keine schwere Insolvenz in den letzten 5 Jahren, keine schweren Steuerverstöße.' },
+  { thema:'recht', frage:'Auf welchem Weg kann die IHK-Fachkundeprüfung ersetzt werden?',
+    optionen:['Durch eine anerkannte kaufmännische Ausbildung oder 5 Jahre Führungserfahrung im Taxigewerbe','Durch 3 Jahre Fahrerfahrung','Durch einen Erste-Hilfe-Kurs','Durch Vorlage des P-Scheins'],
+    richtig:0, erklaerung:'Alternativen zur Prüfung: anerkannte Ausbildung (z.B. Kaufmann/-frau für Spedition) oder mindestens 5 Jahre als leitender Angestellter in einem Taxiunternehmen. Frag bei deiner IHK nach!' },
+
+  // KAUFMÄNNISCH (8 Fragen)
+  { thema:'kaufmaennisch', frage:'Was sind variable Kosten in einem Taxiunternehmen?',
+    optionen:['Kosten, die mit der Fahrleistung steigen (z.B. Kraftstoff, Reifen)','Fixkosten wie Miete oder Versicherung','Die Steuern am Jahresende','Löhne der Angestellten'],
+    richtig:0, erklaerung:'Variable Kosten steigen mit der Fahrleistung: Kraftstoff, Reifen, Wartung. Fixkosten (Versicherung, Leasing) bleiben gleich, egal wie viel gefahren wird.' },
+  { thema:'kaufmaennisch', frage:'Ein Taxi fährt im Jahr 80.000 km bei 0,35 € Kosten/km. Wie hoch sind die Jahreskosten?',
+    optionen:['28.000 €','8.000 €','35.000 €','22.000 €'],
+    richtig:0, erklaerung:'80.000 km × 0,35 €/km = 28.000 €. Diese Rechenart kommt in der Prüfung vor – übe Kopfrechnen!' },
+  { thema:'kaufmaennisch', frage:'Was ist der Unterschied zwischen Nettobetrag und Bruttobetrag?',
+    optionen:['Netto = ohne Steuer, Brutto = mit Mehrwertsteuer','Netto = Jahresumsatz, Brutto = Monatsumsatz','Brutto ist immer günstiger','Netto ist der Gewinn nach Abzügen'],
+    richtig:0, erklaerung:'Netto = ohne Mehrwertsteuer. Brutto = inkl. MwSt. Für Taxi-Fahrten gilt der ermäßigte Steuersatz von 7 %.' },
+  { thema:'kaufmaennisch', frage:'Wann muss ein Taxiunternehmer Umsatzsteuer abführen?',
+    optionen:['Immer – außer er ist Kleinunternehmer unter 22.000 € Jahresumsatz','Nur bei Fahrten über 50 km','Nur bei mehr als 3 Fahrzeugen','Nie – Taxis sind steuerfrei'],
+    richtig:0, erklaerung:'Kleinunternehmer (§ 19 UStG) unter 22.000 € Vorjahresumsatz können auf die MwSt. verzichten. Sonst gilt für Taxifahrten 7 %.' },
+  { thema:'kaufmaennisch', frage:'Was ist eine Betriebskostenabrechnung?',
+    optionen:['Eine Aufstellung aller Einnahmen und Ausgaben','Die Abrechnung mit Fahrgästen','Ein Vertrag mit der Versicherung','Das Fahrtenbuch'],
+    richtig:0, erklaerung:'Die Betriebskostenabrechnung zeigt alle Kosten und Einnahmen des Unternehmens. Sie ist Basis für Steuererklärung und wirtschaftliche Planung.' },
+  { thema:'kaufmaennisch', frage:'Was versteht man unter einem Fixkostenblock?',
+    optionen:['Kosten, die unabhängig von der Fahrleistung anfallen (z.B. Versicherung, Leasing)','Kosten, die sich monatlich verdoppeln','Sonderabgaben an die IHK','Einmalige Investitionskosten'],
+    richtig:0, erklaerung:'Fixkosten entstehen unabhängig davon, wie viel das Taxi fährt: Versicherungsprämie, Leasing-/Kreditrate, Genehmigungsgebühr, Steuerberatung.' },
+  { thema:'kaufmaennisch', frage:'Ein Fahrpreis beträgt netto 10 €. Wie hoch ist der Bruttobetrag mit 7 % MwSt.?',
+    optionen:['10,70 €','11,90 €','10,07 €','17,00 €'],
+    richtig:0, erklaerung:'10 € × 1,07 = 10,70 €. Für Taxifahrten gilt der ermäßigte Umsatzsteuersatz von 7 %.' },
+  { thema:'kaufmaennisch', frage:'Was ist beim Erstellen einer korrekten Quittung für Taxifahrten Pflicht?',
+    optionen:['Datum, Strecke, Fahrpreis, Name des Unternehmens und MwSt.-Ausweis','Nur der Fahrpreis','Name des Fahrgasts und Zielort','Führerscheinnummer des Fahrers'],
+    richtig:0, erklaerung:'Eine ordnungsgemäße Quittung enthält: Datum, Fahrstrecke, Fahrpreis (netto/brutto), Steuersatz, MwSt.-Betrag und Unternehmensname/-anschrift.' },
+
+  // TECHNIK (6 Fragen)
+  { thema:'technik', frage:'Was ist ein Taxameter?',
+    optionen:['Ein geeichtes Gerät, das den Fahrpreis automatisch berechnet','Ein GPS-Gerät für Navigation','Das Funksystem im Taxi','Ein Gerät zur Fahrtzeit-Messung'],
+    richtig:0, erklaerung:'Der Taxameter ist ein amtlich geeichtes Messgerät (Eich-Gesetz), das Fahrpreis nach Zeit und Strecke berechnet. Er muss regelmäßig geeicht werden.' },
+  { thema:'technik', frage:'Wann muss ein Taxi zur Hauptuntersuchung (TÜV)?',
+    optionen:['Jährlich – Taxis müssen jedes Jahr zum TÜV','Alle 2 Jahre','Alle 3 Jahre','Nur bei über 100.000 km'],
+    richtig:0, erklaerung:'Als gewerblich genutztes Fahrzeug muss ein Taxi jährlich zur HU – nicht wie PKW alle 2 Jahre. Das regelt die Fahrzeug-Zulassungsverordnung (FZV).' },
+  { thema:'technik', frage:'Was gehört zur Pflichtausstattung eines Taxis laut BOKraft?',
+    optionen:['Taxischild (Dachzeichen), Taxameter, Quittungsdrucker','Klimaanlage, DVD-Player, WLAN','Navigationsgerät, Dashcam, Telefon','Kindersitz, Rollstuhlrampe, Rückfahrkamera'],
+    richtig:0, erklaerung:'Pflicht: Dachzeichen mit Betriebsbereitschaftsanzeige, geeichter Taxameter, Drucker für Quittungen/Belege – so schreibt es die BOKraft vor.' },
+  { thema:'technik', frage:'Was bedeutet "Fahrzeug ist betriebsbereit" im Taxigewerbe?',
+    optionen:['Das Fahrzeug ist technisch einwandfrei, zugelassen und einsatzbereit','Der Fahrer ist gerade angekommen','Das Taxi steht am Taxistand','Die Bestellung wurde bestätigt'],
+    richtig:0, erklaerung:'Betriebsbereit = technisch einwandfrei, alle Zulassungen vorhanden, Ausrüstung funktioniert, Fahrer hat das Fahrzeug übernommen.' },
+  { thema:'technik', frage:'Wie oft muss der Taxameter geeicht werden?',
+    optionen:['Nach jeder Änderung der Tarife oder spätestens alle 2 Jahre','Nur einmal bei der Erstzulassung','Jährlich zusammen mit dem TÜV','Alle 5 Jahre'],
+    richtig:0, erklaerung:'Der Taxameter muss nach jeder Tarifänderung neu geeicht werden und darf maximal 2 Jahre ohne Nacheichung verwendet werden (Mess- und Eichgesetz).' },
+  { thema:'technik', frage:'Was ist das Dachzeichen beim Taxi?',
+    optionen:['Das beleuchtete "TAXI"-Schild auf dem Dach, das die Betriebsbereitschaft anzeigt','Ein GPS-Antennensystem','Ein Sicherheitssystem gegen Überfälle','Das Funksystem des Fahrzeugs'],
+    richtig:0, erklaerung:'Das Dachzeichen (Taxischild) zeigt durch Beleuchtung an, ob das Taxi frei (beleuchtet) oder besetzt (unbeleuchtet) ist. Es ist Pflicht laut BOKraft.' },
+
+  // VERKEHR (5 Fragen)
+  { thema:'verkehr', frage:'Was regelt das Fahrpersonalrecht?',
+    optionen:['Lenk- und Ruhezeiten für Fahrer im gewerblichen Personenverkehr','Die Einteilung der Fahrstunden','Den Führerscheinerwerb','Die Taxipreise'],
+    richtig:0, erklaerung:'Das Fahrpersonalrecht legt fest, wie lange ein Taxifahrer fahren darf (Lenkzeit) und wie lange er Pause machen muss (Ruhezeit) – für die Sicherheit im Straßenverkehr.' },
+  { thema:'verkehr', frage:'Wie lange darf ein Taxifahrer ohne Pause am Stück fahren?',
+    optionen:['Maximal 4,5 Stunden – dann mindestens 45 Minuten Pause','Maximal 8 Stunden ohne Pause','Maximal 2 Stunden – dann 15 Minuten Pause','Keine Vorschrift für Taxis'],
+    richtig:0, erklaerung:'Nach EU-Fahrpersonalrecht: Nach 4,5 Stunden Lenkzeit ist eine Pause von mind. 45 Minuten Pflicht (oder aufgeteilt in 15+30 Minuten). Das gilt auch für Taxis!' },
+  { thema:'verkehr', frage:'Was muss ein Taxifahrer beim Unfall sofort tun?',
+    optionen:['Anhalten, Absichern, Helfen, Polizei/Rettung rufen, Daten aufnehmen','Weiterfahren und später melden','Nur den Schaden fotografieren','Zuerst die Versicherung anrufen'],
+    richtig:0, erklaerung:'Unfallpflichten: Stopp – Absichern (Warndreieck, Warnblinker) – Helfen (Erste Hilfe) – Notruf 110/112 – Daten austauschen. Gesetzliche Pflicht!' },
+  { thema:'verkehr', frage:'Wie viele Stunden Ruhezeit hat ein Taxifahrer täglich mindestens?',
+    optionen:['11 Stunden','8 Stunden','6 Stunden','10 Stunden'],
+    richtig:0, erklaerung:'Die tägliche Ruhezeit beträgt mindestens 11 aufeinanderfolgende Stunden. In Ausnahmefällen darf sie auf 9 Stunden verkürzt werden (max. 3x pro Woche).' },
+  { thema:'verkehr', frage:'Was ist eine Sondernutzungsgenehmigung im Taxigewerbe?',
+    optionen:['Erlaubnis, Taxistände oder öffentliche Flächen für den Taxibetrieb zu nutzen','Eine zweite Genehmigung für Nachtfahrten','Ein Ausnahmefahrschein für ausländische Fahrer','Eine Sonderlizenz für Großraumtaxis'],
+    richtig:0, erklaerung:'Für das Aufstellen an Taxiständen oder die Nutzung öffentlicher Flächen kann eine Sondernutzungserlaubnis der Kommune erforderlich sein.' },
+
+  // SOZIAL (5 Fragen)
+  { thema:'sozial', frage:'Welche Versicherung ist für ein Taxi zwingend vorgeschrieben?',
+    optionen:['KFZ-Haftpflichtversicherung','Vollkaskoversicherung','Insassenunfallversicherung','Berufsunfähigkeitsversicherung'],
+    richtig:0, erklaerung:'Die KFZ-Haftpflichtversicherung ist gesetzlich vorgeschrieben. Ohne sie darf kein Fahrzeug am Straßenverkehr teilnehmen. Kasko ist freiwillig, aber empfehlenswert.' },
+  { thema:'sozial', frage:'Was ist die Berufsgenossenschaft (BG) für Taxiunternehmen?',
+    optionen:['Gesetzliche Unfallversicherung für Arbeitsunfälle und Berufskrankheiten','Ein Berufsverband der Taxifahrer','Eine private Krankenversicherung','Die Gewerkschaft der Fahrer'],
+    richtig:0, erklaerung:'Die BG Verkehr ist die gesetzliche Unfallversicherung für Taxibetriebe. Jeder Unternehmer ist Pflichtmitglied. Sie übernimmt Kosten bei Arbeitsunfällen.' },
+  { thema:'sozial', frage:'Wenn ein Taxiunternehmer Fahrer anstellt – was muss er sozialversicherungsrechtlich tun?',
+    optionen:['Fahrer bei der Sozialversicherung anmelden und Beiträge abführen','Nichts – das macht der Fahrer selbst','Nur Vollkaskoversicherung abschließen','Einen Tarifvertrag unterschreiben'],
+    richtig:0, erklaerung:'Als Arbeitgeber muss der Taxiunternehmer Fahrer bei der Sozialversicherung anmelden (KV, PV, RV, AV) und die Arbeitgeberbeiträge (ca. 20 % des Bruttolohns) abführen.' },
+  { thema:'sozial', frage:'Was deckt die Teilkaskoversicherung für Taxis ab?',
+    optionen:['Diebstahl, Feuer, Unwetterschäden, Glasbruch','Auch selbstverschuldete Unfälle','Haftpflichtschäden an anderen','Persönliche Haftung des Fahrers'],
+    richtig:0, erklaerung:'Teilkasko deckt: Diebstahl, Brand/Explosion, Elementarschäden (Sturm, Hagel, Überschwemmung), Glasbruch und Kurzschlussschäden. Eigenverschulden ist nicht dabei – das ist Vollkasko.' },
+  { thema:'sozial', frage:'Wofür steht der Begriff "Insolvenz" und was bedeutet er für einen Taxiunternehmer?',
+    optionen:['Zahlungsunfähigkeit; eine Insolvenz in den letzten 5 Jahren kann zur Ablehnung der Konzession führen','Ein Steuerbescheid vom Finanzamt','Ein Bußgeldbescheid der Verkehrsbehörde','Ein befristeter Fahrzeugführerschein'],
+    richtig:0, erklaerung:'Insolvenz = Zahlungsunfähigkeit. Eine Insolvenz in den letzten 5 Jahren gilt als Beleg für mangelnde finanzielle Zuverlässigkeit und kann zur Ablehnung der Konzession führen.' },
+
+  // EU (4 Fragen)
+  { thema:'eu', frage:'Was ist die Verordnung (EG) Nr. 1071/2009?',
+    optionen:['EU-Regelung für den Marktzugang im Straßenpersonenverkehr (Berufszulassung)','Eine EU-Steuerregelung','EU-Vorschriften für Fahrzeugemissionen','Eine Richtlinie für Taxameter'],
+    richtig:0, erklaerung:'Die EU-Verordnung 1071/2009 regelt die Berufszulassung für Straßenpersonenverkehrsunternehmen in ganz Europa: Zuverlässigkeit, finanzielle Leistungsfähigkeit und fachliche Eignung.' },
+  { thema:'eu', frage:'Darf ein deutsches Taxi Fahrgäste in einem anderen EU-Land aufnehmen?',
+    optionen:['Grundsätzlich nicht – Kabotage ist im Taxiverkehr verboten','Ja, überall in der EU ohne Einschränkung','Nur in Nachbarländern','Nur mit EU-Sondergenehmigung'],
+    richtig:0, erklaerung:'Kabotage (Fahrgäste im Ausland aufnehmen und dort absetzen) ist im nationalen Taxiverkehr grundsätzlich verboten. Nur bei speziellen grenzüberschreitenden Genehmigungen gibt es Ausnahmen.' },
+  { thema:'eu', frage:'Was regelt die EU-Verordnung (EG) Nr. 561/2006?',
+    optionen:['Lenk- und Ruhezeiten für Fahrer im Straßenverkehr (gilt EU-weit)','Fahrzeugzulassung in der EU','Taxitarife in Grenzregionen','Emissionsgrenzwerte für Taxis'],
+    richtig:0, erklaerung:'Die EU-VO 561/2006 legt einheitliche Lenk- und Ruhezeiten für gewerbliche Fahrer in der gesamten EU fest – eine wichtige Grundlage des Fahrpersonalrechts.' },
+  { thema:'eu', frage:'Was bedeutet die EU-Cabotage-Regelung für Busse?',
+    optionen:['Ausländische Busse dürfen unter bestimmten Bedingungen Fahrgäste innerhalb Deutschlands befördern','Busse dürfen nicht über Grenzen fahren','Nur deutsche Busse dürfen in Deutschland fahren','Kabotage ist für alle Fahrzeugtypen verboten'],
+    richtig:0, erklaerung:'Für Busse im Linienverkehr und Gelegenheitsverkehr gibt es EU-weit harmonisierte Kabotage-Regeln. Taxis sind dagegen vom nationalen Genehmigungsrecht erfasst und unterliegen strengeren Beschränkungen.' },
+];
+
+// =====================================================
+// STATE
+// =====================================================
+const FREE_LIMIT = 10;
+
+let STATE = {
+  themaScores: {},   // { themaId: { richtig, gesamt } }
+  streak: 0,
+  xp: 0,
+  sessions: 0,
+  totalAnswered: 0,
+  totalCorrect: 0,
+  todayAnswered: 0,
+  lastDay: '',
+  paid: false,
+  // Quiz state
+  quizMode: null,
+  quizFragen: [],
+  quizIdx: 0,
+  quizAntworten: [],
+  quizDone: false,
+};
+
+function loadState() {
+  try {
+    const s = localStorage.getItem('taxiprofi_v2');
+    if (s) Object.assign(STATE, JSON.parse(s));
+  } catch(e) {}
+  // Check streak
+  const today = new Date().toDateString();
+  if (STATE.lastDay !== today) {
+    const yesterday = new Date(Date.now() - 86400000).toDateString();
+    if (STATE.lastDay !== yesterday && STATE.lastDay !== '') STATE.streak = 0;
+    STATE.todayAnswered = 0;
+  }
+}
+
+function saveState() {
+  const today = new Date().toDateString();
+  STATE.lastDay = today;
+  localStorage.setItem('taxiprofi_v2', JSON.stringify(STATE));
+}
+
+// =====================================================
+// NAVIGATION
+// =====================================================
+let currentScreen = 'home';
+
+function showScreen(name) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+  document.getElementById('screen-' + name).classList.add('active');
+  const navEl = document.getElementById('nav-' + name);
+  if (navEl) navEl.classList.add('active');
+  // Scroll to top
+  document.querySelector('.screens').scrollTo(0, 0);
+  currentScreen = name;
+
+  if (name === 'home') renderHome();
+  if (name === 'lernen') renderLernen();
+  if (name === 'stats') renderStats();
+  if (name === 'quiz' && !STATE.quizMode) renderQuizStart();
+}
+
+// =====================================================
+// HOME
+// =====================================================
+function renderHome() {
+  // Greeting
+  const h = new Date().getHours();
+  const g = h < 12 ? 'Guten Morgen' : h < 18 ? 'Guten Tag' : 'Guten Abend';
+  document.getElementById('greeting').textContent = g;
+
+  // Hero stats
+  const pct = calcGlobalPct();
+  document.getElementById('hero-total-pct').textContent = pct + '%';
+  document.getElementById('hero-streak').textContent = STATE.streak;
+  document.getElementById('hero-xp').textContent = STATE.xp;
+
+  // Streak
+  document.getElementById('streak-val').textContent = STATE.streak + ' ' + (STATE.streak === 1 ? 'Tag' : 'Tage');
+  document.getElementById('streak-sub').textContent = STATE.todayAnswered > 0
+    ? `Heute ${STATE.todayAnswered} Fragen beantwortet! 🎉`
+    : 'Heute noch nichts gelernt – fang an!';
+
+  // Daily goal
+  const dailyGoal = 10;
+  const dailyDone = Math.min(STATE.todayAnswered, dailyGoal);
+  const dailyPct = Math.round((dailyDone / dailyGoal) * 100);
+  document.getElementById('daily-bar').style.width = dailyPct + '%';
+  document.getElementById('daily-sub-text').textContent = dailyDone >= dailyGoal
+    ? `Tagesziel erreicht! ✅ (${dailyDone}/${dailyGoal})`
+    : `${dailyDone} von ${dailyGoal} Fragen heute erledigt`;
+  document.getElementById('daily-icon').textContent = dailyDone >= dailyGoal ? '🏆' : '📚';
+
+  // Topic overview
+  const wrap = document.getElementById('home-topics');
+  wrap.innerHTML = '';
+  THEMEN.forEach(t => {
+    const score = STATE.themaScores[t.id];
+    const pct = score && score.gesamt > 0 ? Math.round((score.richtig / score.gesamt) * 100) : 0;
+    const color = !score ? 'var(--gray-300)' : pct >= 70 ? 'var(--success)' : pct >= 40 ? 'var(--warning)' : 'var(--danger)';
+    const row = document.createElement('div');
+    row.style.cssText = 'display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--gray-100);';
+    row.innerHTML = `
+      <span style="font-size:18px;width:24px;text-align:center;">${t.icon}</span>
+      <div style="flex:1;">
+        <div style="font-size:13px;font-weight:600;color:var(--gray-700);margin-bottom:4px;">${t.name}</div>
+        <div class="pbar-wrap"><div class="pbar-fill" style="width:${pct}%;background:${color};"></div></div>
+      </div>
+      <span style="font-size:12px;font-weight:700;color:${color};min-width:34px;text-align:right;">${score ? pct + '%' : 'Neu'}</span>
+      <button onclick="startQuiz('${t.id}')" style="font-size:11px;padding:5px 9px;border:none;border-radius:6px;background:var(--primary);color:white;cursor:pointer;font-weight:700;flex-shrink:0;">Üben</button>
+    `;
+    wrap.appendChild(row);
+  });
+}
+
+function renderImpressum() {
+  document.getElementById('app').innerHTML = `
+    <div style="min-height:100vh;background:var(--bg);padding:24px 20px 80px">
+      <button onclick="renderHome()" style="background:none;border:none;cursor:pointer;color:var(--primary);font-size:15px;font-weight:600;margin-bottom:20px;padding:0">← Zurück</button>
+      <div style="background:#fff;border-radius:16px;padding:24px;box-shadow:var(--card-shadow)">
+        <h1 style="font-size:20px;font-weight:700;margin-bottom:16px;color:var(--gray-900)">Impressum</h1>
+        <p style="color:var(--gray-600);font-size:14px;line-height:1.7">
+          <strong>Angaben gemäß § 5 TMG</strong><br><br>
+          Tim Cordell<br>
+          Hermann-Löns-Str. 2<br>
+          79100 Freiburg im Breisgau<br><br>
+          <strong>Kontakt</strong><br>
+          E-Mail: <a href="mailto:cordelltim@googlemail.com" style="color:var(--primary)">cordelltim@googlemail.com</a><br><br>
+          <strong>Verantwortlich für den Inhalt nach § 55 Abs. 2 RStV</strong><br>
+          Tim Cordell, Hermann-Löns-Str. 2, 79100 Freiburg im Breisgau<br><br>
+          <strong>Streitschlichtung</strong><br>
+          Die Europäische Kommission stellt eine Plattform zur Online-Streitbeilegung (OS) bereit:
+          <a href="https://ec.europa.eu/consumers/odr" target="_blank" rel="noopener" style="color:var(--primary)">https://ec.europa.eu/consumers/odr</a>.<br>
+          Wir sind nicht bereit oder verpflichtet, an Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle teilzunehmen.
+        </p>
+      </div>
+    </div>
+  `;
+}
+
+function renderDatenschutz() {
+  document.getElementById('app').innerHTML = `
+    <div style="min-height:100vh;background:var(--bg);padding:24px 20px 80px">
+      <button onclick="renderHome()" style="background:none;border:none;cursor:pointer;color:var(--primary);font-size:15px;font-weight:600;margin-bottom:20px;padding:0">← Zurück</button>
+      <div style="background:#fff;border-radius:16px;padding:24px;box-shadow:var(--card-shadow)">
+        <h1 style="font-size:20px;font-weight:700;margin-bottom:16px;color:var(--gray-900)">Datenschutzerklärung</h1>
+        <div style="color:var(--gray-600);font-size:14px;line-height:1.8">
+          <strong>1. Verantwortlicher</strong><br>
+          Tim Cordell, Hermann-Löns-Str. 2, 79100 Freiburg · cordelltim@googlemail.com<br><br>
+
+          <strong>2. Erhobene Daten</strong><br>
+          Diese App erhebt und verarbeitet folgende Daten:<br>
+          – <em>Lernfortschritt</em> (lokal im Browser gespeichert via localStorage)<br>
+          – Bei Anmeldung: Name, E-Mail-Adresse (via Google-Konto, gespeichert in Firebase Firestore)<br>
+          – Bei Zahlung: Zahlungsdaten werden ausschließlich von PayPal verarbeitet<br><br>
+
+          <strong>3. Firebase / Google</strong><br>
+          Wir nutzen Firebase Authentication und Cloud Firestore von Google LLC. Die Daten werden in europäischen Rechenzentren (Region europe-west3) gespeichert.
+          Datenschutzerklärung Google: <a href="https://policies.google.com/privacy" target="_blank" rel="noopener" style="color:var(--primary)">policies.google.com/privacy</a><br><br>
+
+          <strong>4. PayPal</strong><br>
+          Zahlungen werden über PayPal (Europe) S.à r.l. et Cie, S.C.A. abgewickelt. TaxiProfi speichert keine Zahlungsdaten.
+          Datenschutzerklärung PayPal: <a href="https://www.paypal.com/de/webapps/mpp/ua/privacy-full" target="_blank" rel="noopener" style="color:var(--primary)">paypal.com/de/…/privacy</a><br><br>
+
+          <strong>5. Ihre Rechte</strong><br>
+          Sie haben das Recht auf Auskunft, Berichtigung, Löschung und Einschränkung der Verarbeitung Ihrer Daten (Art. 15–18 DSGVO).
+          Kontakt: cordelltim@googlemail.com<br><br>
+
+          <strong>6. Beschwerderecht</strong><br>
+          Sie haben das Recht, sich bei der zuständigen Aufsichtsbehörde zu beschweren. Zuständig ist der Landesbeauftragte für Datenschutz Baden-Württemberg.
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function calcGlobalPct() {
+  let richtig = 0, gesamt = 0;
+  Object.values(STATE.themaScores).forEach(s => { richtig += s.richtig; gesamt += s.gesamt; });
+  if (gesamt === 0) return 0;
+  return Math.round((richtig / gesamt) * 100);
+}
+
+// =====================================================
+// LERNEN
+// =====================================================
+function renderLernen() {
+  document.getElementById('lernen-count').textContent = FRAGEN.length + ' Fragen';
+  const grid = document.getElementById('topicGrid');
+  grid.innerHTML = '';
+  THEMEN.forEach(t => {
+    const score = STATE.themaScores[t.id];
+    const pct = score && score.gesamt > 0 ? Math.round((score.richtig / score.gesamt) * 100) : 0;
+    const count = FRAGEN.filter(f => f.thema === t.id).length;
+    const color = !score ? 'var(--gray-400)' : pct >= 70 ? 'var(--success)' : pct >= 40 ? 'var(--warning)' : 'var(--danger)';
+    const btn = document.createElement('button');
+    btn.className = 'topic-card';
+    btn.innerHTML = `
+      <div class="topic-icon-wrap" style="background:${t.bg};">
+        <span style="font-size:26px;">${t.icon}</span>
+      </div>
+      <div class="topic-info">
+        <div class="topic-name">${t.name}</div>
+        <div class="topic-desc">${t.desc}</div>
+        <div class="pbar-wrap"><div class="pbar-fill" style="width:${pct}%;background:${color};"></div></div>
+        <div class="topic-meta" style="margin-top:5px;">
+          <span class="topic-count">${count} Fragen</span>
+          <span class="topic-score" style="color:${color}">${score ? pct + '% korrekt' : 'Noch nicht geübt'}</span>
+        </div>
+      </div>
+      <div class="topic-arrow"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg></div>
+    `;
+    btn.onclick = () => startQuiz(t.id);
+    grid.appendChild(btn);
+  });
+}
+
+// =====================================================
+// QUIZ
+// =====================================================
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function startQuiz(themaId) {
+  STATE.quizMode = themaId;
+  STATE.quizFragen = shuffle(themaId === 'alle' ? [...FRAGEN] : FRAGEN.filter(f => f.thema === themaId));
+  STATE.quizIdx = 0;
+  STATE.quizAntworten = [];
+  STATE.quizDone = false;
+  showScreen('quiz');
+  renderFrage();
+}
+
+function startWeakQuiz() {
+  // Find topics with score < 70% or not attempted
+  const weak = FRAGEN.filter(f => {
+    const s = STATE.themaScores[f.thema];
+    if (!s) return true;
+    return (s.richtig / s.gesamt) < 0.7;
+  });
+  if (weak.length === 0) {
+    startQuiz('alle');
+    return;
+  }
+  STATE.quizMode = 'schwach';
+  STATE.quizFragen = shuffle(weak);
+  STATE.quizIdx = 0;
+  STATE.quizAntworten = [];
+  STATE.quizDone = false;
+  showScreen('quiz');
+  renderFrage();
+}
+
+function renderQuizStart() {
+  const c = document.getElementById('quizContent');
+  c.innerHTML = `
+    <div class="quiz-start-wrap">
+      <div class="quiz-start-hero">
+        <div class="quiz-start-icon">🧠</div>
+        <div class="quiz-start-title">Quiz starten</div>
+        <div class="quiz-start-sub">Wähle einen Modus und teste dein Wissen für die IHK-Prüfung</div>
+        <button class="btn btn-primary btn-full btn-lg" onclick="startQuiz('alle')" style="background:rgba(255,255,255,0.2);border:2px solid rgba(255,255,255,0.4);">
+          🎯 Alle ${FRAGEN.length} Fragen gemischt
+        </button>
+      </div>
+      <div class="quiz-mode-grid">
+        ${THEMEN.map(t => {
+          const count = FRAGEN.filter(f => f.thema === t.id).length;
+          const score = STATE.themaScores[t.id];
+          const pct = score && score.gesamt > 0 ? Math.round((score.richtig/score.gesamt)*100) : null;
+          return `
+          <button class="quiz-mode-btn" onclick="startQuiz('${t.id}')">
+            <span class="qm-icon">${t.icon}</span>
+            <div>
+              <div class="qm-title">${t.name}</div>
+              <div class="qm-sub">${count} Fragen${pct !== null ? ' · ' + pct + '% korrekt' : ' · Noch nicht geübt'}</div>
+            </div>
+            <div class="qm-arrow" style="font-size:18px;color:var(--gray-300);">›</div>
+          </button>`;
+        }).join('')}
+      </div>
+    </div>
+  `;
+}
+
+function applyPromoCode() {
+  const input = document.getElementById('promo-input');
+  const error = document.getElementById('promo-error');
+  const raw = input.value.trim().toUpperCase().replace(/\s+/g, '');
+  if (VALID_CODES.includes(raw)) {
+    STATE.paid = true;
+    saveState();
+    document.getElementById('app').innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100vh;font-size:24px">✅ Freigeschalten!</div>';
+    setTimeout(renderHome, 1200);
+  } else {
+    error.textContent = 'Ungültiger Code.';
+    input.value = '';
+    setTimeout(() => { error.textContent = ''; }, 2000);
+  }
+}
+
+function renderPaywall() {
+  document.getElementById('app').innerHTML = `
+    <div style="min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;background:var(--bg)">
+      <div style="background:#fff;border-radius:20px;padding:32px 24px;max-width:400px;width:100%;box-shadow:var(--card-shadow-lg);text-align:center">
+        <div style="font-size:48px;margin-bottom:16px">🚖</div>
+        <h2 style="font-size:22px;font-weight:700;color:var(--gray-900);margin-bottom:8px">Vollzugang freischalten</h2>
+        <p style="color:var(--gray-600);margin-bottom:8px">Du hast deine <strong>10 kostenlosen Fragen</strong> genutzt.</p>
+        <p style="color:var(--gray-600);margin-bottom:24px">Schalte alle Themen und unbegrenzte Fragen frei – einmalig, kein Abo.</p>
+        <div style="background:var(--primary-light);border-radius:12px;padding:16px;margin-bottom:24px">
+          <div style="font-size:32px;font-weight:800;color:var(--primary)">19,99 €</div>
+          <div style="color:var(--primary-dark);font-size:13px;margin-top:4px">Einmalzahlung · lebenslanger Zugang</div>
+        </div>
+        <div id="paypal-button-container"></div>
+        <p style="color:var(--gray-400);font-size:11px;margin-top:16px">Sichere Zahlung über PayPal · Sofortiger Zugang nach Zahlung</p>
+        <div style="margin-top:20px;border-top:1px solid var(--gray-100);padding-top:16px">
+          <p style="font-size:13px;color:var(--gray-400);margin-bottom:8px">Promo-Code</p>
+          <div style="display:flex;gap:8px">
+            <input id="promo-input" type="text" maxlength="12" placeholder="Code eingeben"
+              autocomplete="off" autocorrect="off" spellcheck="false"
+              onkeydown="if(event.key==='Enter') applyPromoCode()"
+              style="flex:1;padding:10px 12px;border:1.5px solid var(--gray-200);border-radius:8px;font-size:14px;letter-spacing:1px;text-transform:uppercase;outline:none;color:var(--gray-700)">
+            <button onclick="applyPromoCode()"
+              style="padding:10px 16px;background:var(--gray-100);border:none;border-radius:8px;font-size:14px;font-weight:600;color:var(--gray-700);cursor:pointer">
+              ✓
+            </button>
+          </div>
+          <div id="promo-error" style="font-size:12px;color:var(--danger);margin-top:6px;min-height:16px"></div>
+        </div>
+      </div>
+    </div>
+  `;
+
+  function initPayPal() {
+    if (typeof paypal === 'undefined') { setTimeout(initPayPal, 300); return; }
+    paypal.Buttons({
+      style: { layout: 'vertical', color: 'gold', shape: 'pill', label: 'pay' },
+      createOrder: (data, actions) => actions.order.create({
+        purchase_units: [{ amount: { value: '19.99', currency_code: 'EUR' }, description: 'TaxiProfi – Vollzugang IHK-Prüfungsvorbereitung' }]
+      }),
+      onApprove: async (data, actions) => {
+        await actions.order.capture();
+        STATE.paid = true;
+        saveState();
+        document.getElementById('app').innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100vh;font-size:24px">🎉 Zahlung erfolgreich!</div>';
+        setTimeout(renderHome, 1500);
+      },
+      onError: () => alert('Zahlung fehlgeschlagen. Bitte versuche es erneut.')
+    }).render('#paypal-button-container');
+  }
+  initPayPal();
+}
+
+function renderFrage() {
+  if (STATE.totalAnswered >= FREE_LIMIT && !STATE.paid) { renderPaywall(); return; }
+  const total = STATE.quizFragen.length;
+  const idx = STATE.quizIdx;
+  if (idx >= total) { renderErgebnis(); return; }
+  const f = STATE.quizFragen[idx];
+  const t = THEMEN.find(t => t.id === f.thema);
+  const pct = Math.round((idx / total) * 100);
+  const richtigBisher = STATE.quizAntworten.filter(a => a.richtig).length;
+  const letters = ['A','B','C','D'];
+
+  document.getElementById('quizContent').innerHTML = `
+    <div class="quiz-header">
+      <button class="quiz-back" onclick="renderQuizStart()">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+      </button>
+      <div class="quiz-top-info">
+        <div class="quiz-topic-badge">${STATE.quizMode === 'alle' ? 'Alle Themen' : STATE.quizMode === 'schwach' ? 'Schwächen üben' : (t ? t.name : '')}</div>
+        <div class="quiz-counter-text">Frage ${idx + 1} von ${total}</div>
+      </div>
+      <div class="quiz-correct-badge">
+        <span>✓</span> ${richtigBisher}/${idx}
+      </div>
+    </div>
+    <div class="quiz-progress-bar">
+      <div class="quiz-progress-fill" style="width:${pct}%"></div>
+    </div>
+    <div class="quiz-card-wrap">
+      <div class="quiz-question-card">
+        <div class="quiz-thema-label" style="color:${t ? t.color : 'var(--primary)'};">${t ? t.icon + ' ' + t.name : ''}</div>
+        <div class="quiz-q-text">${f.frage}</div>
+      </div>
+    </div>
+    <div class="quiz-options-wrap">
+      ${f.optionen.map((o, i) => `
+        <button class="quiz-opt-btn" id="opt${i}" onclick="antworten(${i})">
+          <div class="opt-letter">${letters[i]}</div>
+          <div class="opt-text">${o}</div>
+        </button>
+      `).join('')}
+    </div>
+    <div class="quiz-feedback-panel" id="feedback"></div>
+    <div class="quiz-next-btn-wrap" id="nextWrap" style="display:none;">
+      <button class="btn btn-primary btn-full btn-lg" onclick="naechste()">
+        ${idx + 1 < total ? 'Weiter →' : 'Ergebnis anzeigen 🏁'}
+      </button>
+    </div>
+  `;
+}
+
+function antworten(gewaehlt) {
+  const f = STATE.quizFragen[STATE.quizIdx];
+  const richtig = gewaehlt === f.richtig;
+  STATE.quizAntworten.push({ themaId: f.thema, richtig });
+  STATE.totalAnswered++;
+  STATE.todayAnswered++;
+  if (richtig) { STATE.totalCorrect++; STATE.xp += 10; }
+
+  // Visual feedback on buttons
+  document.querySelectorAll('.quiz-opt-btn').forEach((b, i) => {
+    b.disabled = true;
+    if (i === f.richtig) b.classList.add('correct');
+    if (i === gewaehlt && !richtig) b.classList.add('wrong');
+  });
+
+  // Feedback panel
+  const fb = document.getElementById('feedback');
+  fb.className = 'quiz-feedback-panel show ' + (richtig ? 'correct' : 'wrong');
+  fb.innerHTML = `<div class="feedback-head">${richtig ? '✅ Richtig!' : '❌ Leider falsch.'}</div>${f.erklaerung}`;
+
+  // Show next button
+  document.getElementById('nextWrap').style.display = 'block';
+
+  // Update streak
+  const today = new Date().toDateString();
+  if (STATE.lastDay !== today) {
+    const yesterday = new Date(Date.now() - 86400000).toDateString();
+    if (STATE.lastDay === yesterday) STATE.streak++;
+    else STATE.streak = 1;
+  } else if (STATE.streak === 0) STATE.streak = 1;
+
+  saveState();
+  if (richtig) showXpToast('+10 XP ⭐');
+}
+
+function naechste() {
+  STATE.quizIdx++;
+  if (STATE.quizIdx >= STATE.quizFragen.length) {
+    // Save scores
+    const groups = {};
+    STATE.quizAntworten.forEach(a => {
+      if (!groups[a.themaId]) groups[a.themaId] = { richtig:0, gesamt:0 };
+      groups[a.themaId].gesamt++;
+      if (a.richtig) groups[a.themaId].richtig++;
+    });
+    Object.entries(groups).forEach(([id, s]) => { STATE.themaScores[id] = s; });
+    STATE.sessions++;
+    saveState();
+    renderErgebnis();
+  } else {
+    renderFrage();
+  }
+}
+
+function renderErgebnis() {
+  const richtig = STATE.quizAntworten.filter(a => a.richtig).length;
+  const gesamt = STATE.quizAntworten.length;
+  const pct = gesamt > 0 ? Math.round((richtig / gesamt) * 100) : 0;
+  const emoji = pct >= 80 ? '🏆' : pct >= 60 ? '👍' : pct >= 40 ? '📖' : '💪';
+  const cls = pct >= 70 ? 'good' : pct >= 50 ? 'mid' : 'bad';
+  const label = pct >= 80 ? 'Ausgezeichnet!' : pct >= 70 ? 'Gut gemacht!' : pct >= 50 ? 'Fast geschafft!' : 'Weitermachen!';
+
+  // Find weak topics
+  const groups = {};
+  STATE.quizAntworten.forEach(a => {
+    if (!groups[a.themaId]) groups[a.themaId] = { richtig:0, gesamt:0 };
+    groups[a.themaId].gesamt++;
+    if (a.richtig) groups[a.themaId].richtig++;
+  });
+  const schwach = Object.entries(groups)
+    .filter(([id, s]) => (s.richtig/s.gesamt) < 0.7)
+    .map(([id]) => { const t = THEMEN.find(t => t.id === id); return t ? t.icon + ' ' + t.name : id; });
+
+  document.getElementById('quizContent').innerHTML = `
+    <div class="result-wrap">
+      <div class="result-hero">
+        <div class="result-emoji">${emoji}</div>
+        <div class="result-pct ${cls}">${pct}%</div>
+        <div class="result-label">${label}</div>
+        <div class="result-sub">${richtig} von ${gesamt} Fragen richtig</div>
+        <div class="result-stats-grid">
+          <div class="result-stat-card"><div class="rv" style="color:var(--success);">${richtig}</div><div class="rl">Richtig</div></div>
+          <div class="result-stat-card"><div class="rv" style="color:var(--danger);">${gesamt - richtig}</div><div class="rl">Falsch</div></div>
+          <div class="result-stat-card"><div class="rv" style="color:var(--primary);">${STATE.xp}</div><div class="rl">Gesamt-XP</div></div>
+          <div class="result-stat-card"><div class="rv">${STATE.streak}</div><div class="rl">Tage Streak 🔥</div></div>
+        </div>
+      </div>
+      ${schwach.length > 0 ? `
+      <div class="weak-card">
+        <div class="weak-title">📌 Themen zum Wiederholen:</div>
+        <div class="weak-list">${schwach.map(s => `<li>• ${s}</li>`).join('')}</div>
+      </div>` : `
+      <div class="card" style="background:var(--success-light);border-radius:var(--radius);padding:14px 16px;margin-bottom:12px;">
+        <div style="color:#065F46;font-weight:700;font-size:15px;">🌟 Alle Themen gut gemeistert!</div>
+        <div style="color:#047857;font-size:13px;margin-top:4px;">Weiter so – du bist auf Kurs für die IHK-Prüfung!</div>
+      </div>`}
+      <div class="result-btn-row">
+        <button class="btn btn-primary" style="flex:1;" onclick="startQuiz('${STATE.quizMode || 'alle'}')">🔄 Nochmal</button>
+        <button class="btn btn-ghost" style="flex:1;" onclick="renderQuizStart()">📋 Thema wählen</button>
+      </div>
+      <div style="margin-top:10px;">
+        <button class="btn btn-outline btn-full" onclick="showScreen('home')">🏠 Zur Startseite</button>
+      </div>
+    </div>
+  `;
+}
+
+// =====================================================
+// STATS
+// =====================================================
+function renderStats() {
+  const pct = calcGlobalPct();
+  document.getElementById('stat-pct-big').textContent = pct + '%';
+  document.getElementById('stat-correct').textContent = STATE.totalCorrect;
+  document.getElementById('stat-total-ans').textContent = STATE.totalAnswered;
+  document.getElementById('stat-sessions').textContent = STATE.sessions;
+  document.getElementById('stat-xp-stat').textContent = STATE.xp;
+
+  const list = document.getElementById('statsTopicList');
+  list.innerHTML = '';
+  THEMEN.forEach((t, i) => {
+    const score = STATE.themaScores[t.id];
+    const pct = score && score.gesamt > 0 ? Math.round((score.richtig / score.gesamt) * 100) : 0;
+    const color = !score ? 'var(--gray-300)' : pct >= 70 ? 'var(--success)' : pct >= 40 ? 'var(--warning)' : 'var(--danger)';
+    const row = document.createElement('div');
+    row.className = 'stats-topic-row';
+    if (i === THEMEN.length - 1) row.style.borderBottom = 'none';
+    row.innerHTML = `
+      <div class="stats-topic-icon">${t.icon}</div>
+      <div class="stats-topic-info">
+        <div class="stats-topic-name">${t.name}</div>
+        <div class="pbar-wrap"><div class="pbar-fill" style="width:${pct}%;background:${color};"></div></div>
+      </div>
+      <div class="stats-topic-score" style="color:${color};">${score ? pct + '%' : '–'}</div>
+    `;
+    list.appendChild(row);
+  });
+}
+
+// =====================================================
+// XP TOAST
+// =====================================================
+function showXpToast(msg) {
+  const t = document.getElementById('xpToast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 1800);
+}
+
+// =====================================================
+// INIT
+// =====================================================
+// Freischalt-Codes für kostenlose Zugänge
+const VALID_CODES = [
+  'TAXI-2024',
+  'PROFI-IHK',
+  'LERN-7731',
+  'FREI-4892',
+  'TEST-0001',
+];
+
+// =====================================================
+// INIT
+// =====================================================
+loadState();
+renderHome();
+</script>
+
+<!-- Firebase -->
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/11.9.0/firebase-app.js';
+import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged }
+  from 'https://www.gstatic.com/firebasejs/11.9.0/firebase-auth.js';
+import { getFirestore, doc, setDoc, getDoc }
+  from 'https://www.gstatic.com/firebasejs/11.9.0/firebase-firestore.js';
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCpaVVQ53AL1MvvstMPdhXe4WJzmh122vE",
+  authDomain: "taxiprofi-97db9.firebaseapp.com",
+  projectId: "taxiprofi-97db9",
+  storageBucket: "taxiprofi-97db9.firebasestorage.app",
+  messagingSenderId: "298255628275",
+  appId: "1:298255628275:web:b82714b13887df48534486",
+  measurementId: "G-QVWVSW8L5S"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+// State aus Firestore laden
+async function loadFromCloud(uid) {
+  try {
+    const snap = await getDoc(doc(db, 'users', uid));
+    if (snap.exists()) {
+      const cloudData = snap.data();
+      // Cloud-Daten mit lokalem State zusammenführen (Cloud hat Vorrang)
+      Object.assign(STATE, cloudData);
+      saveState(); // auch lokal sichern
+      renderHome();
+    }
+  } catch(e) { console.warn('Cloud-Laden fehlgeschlagen:', e); }
+}
+
+// State in Firestore speichern
+async function saveToCloud(uid) {
+  try {
+    const { quizMode, quizFragen, quizIdx, quizAntworten, quizDone, ...persistState } = STATE;
+    await setDoc(doc(db, 'users', uid), persistState, { merge: true });
+  } catch(e) { console.warn('Cloud-Speichern fehlgeschlagen:', e); }
+}
+
+// Login-Button hinzufügen
+function renderAuthButton(user) {
+  let btn = document.getElementById('auth-btn');
+  if (!btn) {
+    btn = document.createElement('button');
+    btn.id = 'auth-btn';
+    btn.style.cssText = 'position:fixed;top:12px;right:16px;z-index:9999;padding:6px 14px;border-radius:20px;border:none;font-size:13px;font-weight:600;cursor:pointer;background:#2563EB;color:#fff;box-shadow:0 2px 8px rgba(37,99,235,0.3)';
+    document.body.appendChild(btn);
+  }
+  if (user) {
+    btn.textContent = '☁️ ' + (user.displayName?.split(' ')[0] || 'Konto');
+    btn.onclick = () => { if(confirm('Abmelden?')) signOut(auth); };
+  } else {
+    btn.textContent = '🔑 Anmelden';
+    btn.onclick = () => signInWithPopup(auth, new GoogleAuthProvider());
+  }
+}
+
+// Auth-Status überwachen
+onAuthStateChanged(auth, async (user) => {
+  renderAuthButton(user);
+  if (user) {
+    await loadFromCloud(user.uid);
+    // Nach jedem saveState() auch in Cloud speichern
+    const origSave = window.saveState;
+    window.saveState = function() {
+      origSave();
+      saveToCloud(user.uid);
+    };
+  }
+});
+</script>
+
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/taxi-lernapp/service-worker.js')
+      .catch(err => console.warn('Service Worker Fehler:', err));
+  });
+}
+</script>
+</body>
+</html>
