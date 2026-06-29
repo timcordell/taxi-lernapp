@@ -848,131 +848,26 @@ const THEMEN = [
 ];
 
 const FRAGEN = [
-  // RECHT (10 Fragen)
-  { thema:'recht', frage:'Welches Gesetz regelt die Beförderung von Fahrgästen mit Taxis in Deutschland?',
-    optionen:['Das Personenbeförderungsgesetz (PBefG)','Die Straßenverkehrsordnung (StVO)','Das Handelsgesetzbuch (HGB)','Die BOKraft'],
-    richtig:0, erklaerung:'Das PBefG ist das Kerngesetz für Taxiunternehmer. Es regelt, wer Fahrgäste befördern darf und welche Genehmigungen nötig sind.' },
-  { thema:'recht', frage:'Was ist die BOKraft?',
-    optionen:['Die Verordnung über den Betrieb von Kraftfahrunternehmen im Personenverkehr','Das Gesetz über Kraftfahrzeugsteuer','Eine EU-Verordnung für internationale Transporte','Ein Tarifvertrag für Taxifahrer'],
-    richtig:0, erklaerung:'Die BOKraft regelt die genauen Betriebspflichten: Fahrzeugausstattung, Beförderungspflicht, Sicherheitsvorschriften usw.' },
-  { thema:'recht', frage:'Welche Behörde erteilt die Genehmigung (Konzession) für einen Taxibetrieb?',
-    optionen:['Die Genehmigungsbehörde (z.B. Straßenverkehrsamt)','Die IHK','Das Finanzamt','Der TÜV'],
-    richtig:0, erklaerung:'Die Konzession erteilt die Genehmigungsbehörde (Straßenverkehrsamt oder Ordnungsamt) – nicht die IHK!' },
-  { thema:'recht', frage:'Wie lange ist eine Taxigenehmigung in der Regel maximal gültig?',
-    optionen:['5 Jahre','10 Jahre','1 Jahr','Unbegrenzt'],
-    richtig:0, erklaerung:'Nach § 13 PBefG werden Taxigenehmigungen für maximal 5 Jahre erteilt und müssen dann verlängert werden.' },
-  { thema:'recht', frage:'Was bedeutet Beförderungspflicht bei Taxis?',
-    optionen:['Ein Taxi muss Fahrgäste im Pflichtfahrgebiet mitnehmen','Der Fahrgast muss immer zahlen','Das Taxi muss immer am Stand stehen','Der Fahrer muss Routen vorschlagen'],
-    richtig:0, erklaerung:'Taxis unterliegen der Beförderungspflicht: Sie müssen Fahrgäste im Pflichtfahrgebiet befördern – außer bei gesetzlichen Ausnahmen (z.B. kein Platz).' },
-  { thema:'recht', frage:'Was ist das Pflichtfahrgebiet beim Taxi?',
-    optionen:['Der Bereich, in dem das Taxi fahren muss, wenn es bestellt wird','Das Gebiet, in dem Taxis am günstigsten sind','Die Zone mit freier Preisgestaltung','Das Gebiet außerhalb der Stadtgrenzen'],
-    richtig:0, erklaerung:'Das Pflichtfahrgebiet ist das festgelegte Einsatzgebiet des Taxis (meist die Stadt/Gemeinde). Innerhalb muss das Taxi Fahrten annehmen.' },
-  { thema:'recht', frage:'Welches Mindestalter ist für Taxiunternehmer grundsätzlich vorgeschrieben?',
-    optionen:['21 Jahre','18 Jahre','25 Jahre','Kein Mindestalter'],
-    richtig:0, erklaerung:'Das PBefG sieht grundsätzlich 21 Jahre als Mindestalter vor – in einzelnen Bundesländern kann es Abweichungen geben.' },
-  { thema:'recht', frage:'Was ist die Berufszugangsverordnung (PBZugV)?',
-    optionen:['Regelt die Voraussetzungen für den Zugang zum Personenbeförderungsgewerbe','Legt Tarife für Taxifahrten fest','Regelt die Fahrzeugzulassung','Bestimmt die Prüfungsgebühren'],
-    richtig:0, erklaerung:'Die PBZugV (Berufszugangsverordnung für den Straßenpersonenverkehr) legt fest, welche Anforderungen Taxiunternehmer an persönlicher, finanzieller und fachlicher Eignung erfüllen müssen.' },
-  { thema:'recht', frage:'Was bedeutet persönliche Zuverlässigkeit für einen Taxiunternehmer?',
-    optionen:['Keine schwerwiegenden Verurteilungen, keine Insolvenz, keine schweren Verkehrsverstöße','Mindestens 5 Jahre Berufserfahrung als Fahrer','Besitz eines Meisterbriefs','Mitgliedschaft in einem Berufsverband'],
-    richtig:0, erklaerung:'Persönliche Zuverlässigkeit bedeutet: kein Betrug, keine Gewaltdelikte, keine schwere Insolvenz in den letzten 5 Jahren, keine schweren Steuerverstöße.' },
-  { thema:'recht', frage:'Auf welchem Weg kann die IHK-Fachkundeprüfung ersetzt werden?',
-    optionen:['Durch eine anerkannte kaufmännische Ausbildung oder 5 Jahre Führungserfahrung im Taxigewerbe','Durch 3 Jahre Fahrerfahrung','Durch einen Erste-Hilfe-Kurs','Durch Vorlage des P-Scheins'],
-    richtig:0, erklaerung:'Alternativen zur Prüfung: anerkannte Ausbildung (z.B. Kaufmann/-frau für Spedition) oder mindestens 5 Jahre als leitender Angestellter in einem Taxiunternehmen. Frag bei deiner IHK nach!' },
-
-  // KAUFMÄNNISCH (8 Fragen)
-  { thema:'kaufmaennisch', frage:'Was sind variable Kosten in einem Taxiunternehmen?',
-    optionen:['Kosten, die mit der Fahrleistung steigen (z.B. Kraftstoff, Reifen)','Fixkosten wie Miete oder Versicherung','Die Steuern am Jahresende','Löhne der Angestellten'],
-    richtig:0, erklaerung:'Variable Kosten steigen mit der Fahrleistung: Kraftstoff, Reifen, Wartung. Fixkosten (Versicherung, Leasing) bleiben gleich, egal wie viel gefahren wird.' },
-  { thema:'kaufmaennisch', frage:'Ein Taxi fährt im Jahr 80.000 km bei 0,35 € Kosten/km. Wie hoch sind die Jahreskosten?',
-    optionen:['28.000 €','8.000 €','35.000 €','22.000 €'],
-    richtig:0, erklaerung:'80.000 km × 0,35 €/km = 28.000 €. Diese Rechenart kommt in der Prüfung vor – übe Kopfrechnen!' },
-  { thema:'kaufmaennisch', frage:'Was ist der Unterschied zwischen Nettobetrag und Bruttobetrag?',
-    optionen:['Netto = ohne Steuer, Brutto = mit Mehrwertsteuer','Netto = Jahresumsatz, Brutto = Monatsumsatz','Brutto ist immer günstiger','Netto ist der Gewinn nach Abzügen'],
-    richtig:0, erklaerung:'Netto = ohne Mehrwertsteuer. Brutto = inkl. MwSt. Für Taxi-Fahrten gilt der ermäßigte Steuersatz von 7 %.' },
-  { thema:'kaufmaennisch', frage:'Wann muss ein Taxiunternehmer Umsatzsteuer abführen?',
-    optionen:['Immer – außer er ist Kleinunternehmer unter 22.000 € Jahresumsatz','Nur bei Fahrten über 50 km','Nur bei mehr als 3 Fahrzeugen','Nie – Taxis sind steuerfrei'],
-    richtig:0, erklaerung:'Kleinunternehmer (§ 19 UStG) unter 22.000 € Vorjahresumsatz können auf die MwSt. verzichten. Sonst gilt für Taxifahrten 7 %.' },
-  { thema:'kaufmaennisch', frage:'Was ist eine Betriebskostenabrechnung?',
-    optionen:['Eine Aufstellung aller Einnahmen und Ausgaben','Die Abrechnung mit Fahrgästen','Ein Vertrag mit der Versicherung','Das Fahrtenbuch'],
-    richtig:0, erklaerung:'Die Betriebskostenabrechnung zeigt alle Kosten und Einnahmen des Unternehmens. Sie ist Basis für Steuererklärung und wirtschaftliche Planung.' },
-  { thema:'kaufmaennisch', frage:'Was versteht man unter einem Fixkostenblock?',
-    optionen:['Kosten, die unabhängig von der Fahrleistung anfallen (z.B. Versicherung, Leasing)','Kosten, die sich monatlich verdoppeln','Sonderabgaben an die IHK','Einmalige Investitionskosten'],
-    richtig:0, erklaerung:'Fixkosten entstehen unabhängig davon, wie viel das Taxi fährt: Versicherungsprämie, Leasing-/Kreditrate, Genehmigungsgebühr, Steuerberatung.' },
-  { thema:'kaufmaennisch', frage:'Ein Fahrpreis beträgt netto 10 €. Wie hoch ist der Bruttobetrag mit 7 % MwSt.?',
-    optionen:['10,70 €','11,90 €','10,07 €','17,00 €'],
-    richtig:0, erklaerung:'10 € × 1,07 = 10,70 €. Für Taxifahrten gilt der ermäßigte Umsatzsteuersatz von 7 %.' },
-  { thema:'kaufmaennisch', frage:'Was ist beim Erstellen einer korrekten Quittung für Taxifahrten Pflicht?',
-    optionen:['Datum, Strecke, Fahrpreis, Name des Unternehmens und MwSt.-Ausweis','Nur der Fahrpreis','Name des Fahrgasts und Zielort','Führerscheinnummer des Fahrers'],
-    richtig:0, erklaerung:'Eine ordnungsgemäße Quittung enthält: Datum, Fahrstrecke, Fahrpreis (netto/brutto), Steuersatz, MwSt.-Betrag und Unternehmensname/-anschrift.' },
-
-  // TECHNIK (6 Fragen)
-  { thema:'technik', frage:'Was ist ein Taxameter?',
-    optionen:['Ein geeichtes Gerät, das den Fahrpreis automatisch berechnet','Ein GPS-Gerät für Navigation','Das Funksystem im Taxi','Ein Gerät zur Fahrtzeit-Messung'],
-    richtig:0, erklaerung:'Der Taxameter ist ein amtlich geeichtes Messgerät (Eich-Gesetz), das Fahrpreis nach Zeit und Strecke berechnet. Er muss regelmäßig geeicht werden.' },
-  { thema:'technik', frage:'Wann muss ein Taxi zur Hauptuntersuchung (TÜV)?',
-    optionen:['Jährlich – Taxis müssen jedes Jahr zum TÜV','Alle 2 Jahre','Alle 3 Jahre','Nur bei über 100.000 km'],
-    richtig:0, erklaerung:'Als gewerblich genutztes Fahrzeug muss ein Taxi jährlich zur HU – nicht wie PKW alle 2 Jahre. Das regelt die Fahrzeug-Zulassungsverordnung (FZV).' },
-  { thema:'technik', frage:'Was gehört zur Pflichtausstattung eines Taxis laut BOKraft?',
-    optionen:['Taxischild (Dachzeichen), Taxameter, Quittungsdrucker','Klimaanlage, DVD-Player, WLAN','Navigationsgerät, Dashcam, Telefon','Kindersitz, Rollstuhlrampe, Rückfahrkamera'],
-    richtig:0, erklaerung:'Pflicht: Dachzeichen mit Betriebsbereitschaftsanzeige, geeichter Taxameter, Drucker für Quittungen/Belege – so schreibt es die BOKraft vor.' },
-  { thema:'technik', frage:'Was bedeutet "Fahrzeug ist betriebsbereit" im Taxigewerbe?',
-    optionen:['Das Fahrzeug ist technisch einwandfrei, zugelassen und einsatzbereit','Der Fahrer ist gerade angekommen','Das Taxi steht am Taxistand','Die Bestellung wurde bestätigt'],
-    richtig:0, erklaerung:'Betriebsbereit = technisch einwandfrei, alle Zulassungen vorhanden, Ausrüstung funktioniert, Fahrer hat das Fahrzeug übernommen.' },
-  { thema:'technik', frage:'Wie oft muss der Taxameter geeicht werden?',
-    optionen:['Nach jeder Änderung der Tarife oder spätestens alle 2 Jahre','Nur einmal bei der Erstzulassung','Jährlich zusammen mit dem TÜV','Alle 5 Jahre'],
-    richtig:0, erklaerung:'Der Taxameter muss nach jeder Tarifänderung neu geeicht werden und darf maximal 2 Jahre ohne Nacheichung verwendet werden (Mess- und Eichgesetz).' },
-  { thema:'technik', frage:'Was ist das Dachzeichen beim Taxi?',
-    optionen:['Das beleuchtete "TAXI"-Schild auf dem Dach, das die Betriebsbereitschaft anzeigt','Ein GPS-Antennensystem','Ein Sicherheitssystem gegen Überfälle','Das Funksystem des Fahrzeugs'],
-    richtig:0, erklaerung:'Das Dachzeichen (Taxischild) zeigt durch Beleuchtung an, ob das Taxi frei (beleuchtet) oder besetzt (unbeleuchtet) ist. Es ist Pflicht laut BOKraft.' },
-
-  // VERKEHR (5 Fragen)
-  { thema:'verkehr', frage:'Was regelt das Fahrpersonalrecht?',
-    optionen:['Lenk- und Ruhezeiten für Fahrer im gewerblichen Personenverkehr','Die Einteilung der Fahrstunden','Den Führerscheinerwerb','Die Taxipreise'],
-    richtig:0, erklaerung:'Das Fahrpersonalrecht legt fest, wie lange ein Taxifahrer fahren darf (Lenkzeit) und wie lange er Pause machen muss (Ruhezeit) – für die Sicherheit im Straßenverkehr.' },
-  { thema:'verkehr', frage:'Wie lange darf ein Taxifahrer ohne Pause am Stück fahren?',
-    optionen:['Maximal 4,5 Stunden – dann mindestens 45 Minuten Pause','Maximal 8 Stunden ohne Pause','Maximal 2 Stunden – dann 15 Minuten Pause','Keine Vorschrift für Taxis'],
-    richtig:0, erklaerung:'Nach EU-Fahrpersonalrecht: Nach 4,5 Stunden Lenkzeit ist eine Pause von mind. 45 Minuten Pflicht (oder aufgeteilt in 15+30 Minuten). Das gilt auch für Taxis!' },
-  { thema:'verkehr', frage:'Was muss ein Taxifahrer beim Unfall sofort tun?',
-    optionen:['Anhalten, Absichern, Helfen, Polizei/Rettung rufen, Daten aufnehmen','Weiterfahren und später melden','Nur den Schaden fotografieren','Zuerst die Versicherung anrufen'],
-    richtig:0, erklaerung:'Unfallpflichten: Stopp – Absichern (Warndreieck, Warnblinker) – Helfen (Erste Hilfe) – Notruf 110/112 – Daten austauschen. Gesetzliche Pflicht!' },
-  { thema:'verkehr', frage:'Wie viele Stunden Ruhezeit hat ein Taxifahrer täglich mindestens?',
-    optionen:['11 Stunden','8 Stunden','6 Stunden','10 Stunden'],
-    richtig:0, erklaerung:'Die tägliche Ruhezeit beträgt mindestens 11 aufeinanderfolgende Stunden. In Ausnahmefällen darf sie auf 9 Stunden verkürzt werden (max. 3x pro Woche).' },
-  { thema:'verkehr', frage:'Was ist eine Sondernutzungsgenehmigung im Taxigewerbe?',
-    optionen:['Erlaubnis, Taxistände oder öffentliche Flächen für den Taxibetrieb zu nutzen','Eine zweite Genehmigung für Nachtfahrten','Ein Ausnahmefahrschein für ausländische Fahrer','Eine Sonderlizenz für Großraumtaxis'],
-    richtig:0, erklaerung:'Für das Aufstellen an Taxiständen oder die Nutzung öffentlicher Flächen kann eine Sondernutzungserlaubnis der Kommune erforderlich sein.' },
-
-  // SOZIAL (5 Fragen)
-  { thema:'sozial', frage:'Welche Versicherung ist für ein Taxi zwingend vorgeschrieben?',
-    optionen:['KFZ-Haftpflichtversicherung','Vollkaskoversicherung','Insassenunfallversicherung','Berufsunfähigkeitsversicherung'],
-    richtig:0, erklaerung:'Die KFZ-Haftpflichtversicherung ist gesetzlich vorgeschrieben. Ohne sie darf kein Fahrzeug am Straßenverkehr teilnehmen. Kasko ist freiwillig, aber empfehlenswert.' },
-  { thema:'sozial', frage:'Was ist die Berufsgenossenschaft (BG) für Taxiunternehmen?',
-    optionen:['Gesetzliche Unfallversicherung für Arbeitsunfälle und Berufskrankheiten','Ein Berufsverband der Taxifahrer','Eine private Krankenversicherung','Die Gewerkschaft der Fahrer'],
-    richtig:0, erklaerung:'Die BG Verkehr ist die gesetzliche Unfallversicherung für Taxibetriebe. Jeder Unternehmer ist Pflichtmitglied. Sie übernimmt Kosten bei Arbeitsunfällen.' },
-  { thema:'sozial', frage:'Wenn ein Taxiunternehmer Fahrer anstellt – was muss er sozialversicherungsrechtlich tun?',
-    optionen:['Fahrer bei der Sozialversicherung anmelden und Beiträge abführen','Nichts – das macht der Fahrer selbst','Nur Vollkaskoversicherung abschließen','Einen Tarifvertrag unterschreiben'],
-    richtig:0, erklaerung:'Als Arbeitgeber muss der Taxiunternehmer Fahrer bei der Sozialversicherung anmelden (KV, PV, RV, AV) und die Arbeitgeberbeiträge (ca. 20 % des Bruttolohns) abführen.' },
-  { thema:'sozial', frage:'Was deckt die Teilkaskoversicherung für Taxis ab?',
-    optionen:['Diebstahl, Feuer, Unwetterschäden, Glasbruch','Auch selbstverschuldete Unfälle','Haftpflichtschäden an anderen','Persönliche Haftung des Fahrers'],
-    richtig:0, erklaerung:'Teilkasko deckt: Diebstahl, Brand/Explosion, Elementarschäden (Sturm, Hagel, Überschwemmung), Glasbruch und Kurzschlussschäden. Eigenverschulden ist nicht dabei – das ist Vollkasko.' },
-  { thema:'sozial', frage:'Wofür steht der Begriff "Insolvenz" und was bedeutet er für einen Taxiunternehmer?',
-    optionen:['Zahlungsunfähigkeit; eine Insolvenz in den letzten 5 Jahren kann zur Ablehnung der Konzession führen','Ein Steuerbescheid vom Finanzamt','Ein Bußgeldbescheid der Verkehrsbehörde','Ein befristeter Fahrzeugführerschein'],
-    richtig:0, erklaerung:'Insolvenz = Zahlungsunfähigkeit. Eine Insolvenz in den letzten 5 Jahren gilt als Beleg für mangelnde finanzielle Zuverlässigkeit und kann zur Ablehnung der Konzession führen.' },
-
-  // EU (4 Fragen)
-  { thema:'eu', frage:'Was ist die Verordnung (EG) Nr. 1071/2009?',
-    optionen:['EU-Regelung für den Marktzugang im Straßenpersonenverkehr (Berufszulassung)','Eine EU-Steuerregelung','EU-Vorschriften für Fahrzeugemissionen','Eine Richtlinie für Taxameter'],
-    richtig:0, erklaerung:'Die EU-Verordnung 1071/2009 regelt die Berufszulassung für Straßenpersonenverkehrsunternehmen in ganz Europa: Zuverlässigkeit, finanzielle Leistungsfähigkeit und fachliche Eignung.' },
-  { thema:'eu', frage:'Darf ein deutsches Taxi Fahrgäste in einem anderen EU-Land aufnehmen?',
-    optionen:['Grundsätzlich nicht – Kabotage ist im Taxiverkehr verboten','Ja, überall in der EU ohne Einschränkung','Nur in Nachbarländern','Nur mit EU-Sondergenehmigung'],
-    richtig:0, erklaerung:'Kabotage (Fahrgäste im Ausland aufnehmen und dort absetzen) ist im nationalen Taxiverkehr grundsätzlich verboten. Nur bei speziellen grenzüberschreitenden Genehmigungen gibt es Ausnahmen.' },
-  { thema:'eu', frage:'Was regelt die EU-Verordnung (EG) Nr. 561/2006?',
-    optionen:['Lenk- und Ruhezeiten für Fahrer im Straßenverkehr (gilt EU-weit)','Fahrzeugzulassung in der EU','Taxitarife in Grenzregionen','Emissionsgrenzwerte für Taxis'],
-    richtig:0, erklaerung:'Die EU-VO 561/2006 legt einheitliche Lenk- und Ruhezeiten für gewerbliche Fahrer in der gesamten EU fest – eine wichtige Grundlage des Fahrpersonalrechts.' },
-  { thema:'eu', frage:'Was bedeutet die EU-Cabotage-Regelung für Busse?',
-    optionen:['Ausländische Busse dürfen unter bestimmten Bedingungen Fahrgäste innerhalb Deutschlands befördern','Busse dürfen nicht über Grenzen fahren','Nur deutsche Busse dürfen in Deutschland fahren','Kabotage ist für alle Fahrzeugtypen verboten'],
-    richtig:0, erklaerung:'Für Busse im Linienverkehr und Gelegenheitsverkehr gibt es EU-weit harmonisierte Kabotage-Regeln. Taxis sind dagegen vom nationalen Genehmigungsrecht erfasst und unterliegen strengeren Beschränkungen.' },
+  { thema:'recht', frage:'Welches Gesetz regelt die Beförderung von Fahrgästen mit Taxis in Deutschland?', optionen:['Das Personenbeförderungsgesetz (PBefG)','Die Straßenverkehrsordnung (StVO)','Das Handelsgesetzbuch (HGB)','Die BOKraft'], richtig:0, erklaerung:'Das PBefG ist das Kerngesetz für Taxiunternehmer. Es regelt, wer Fahrgäste befördern darf und welche Genehmigungen nötig sind.' },
+  { thema:'recht', frage:'Was ist die BOKraft?', optionen:['Die Verordnung über den Betrieb von Kraftfahrunternehmen im Personenverkehr','Das Gesetz über Kraftfahrzeugsteuer','Eine EU-Verordnung für internationale Transporte','Ein Tarifvertrag für Taxifahrer'], richtig:0, erklaerung:'Die BOKraft regelt die genauen Betriebspflichten: Fahrzeugausstattung, Beförderungspflicht, Sicherheitsvorschriften usw.' },
+  { thema:'recht', frage:'Welche Behörde erteilt die Genehmigung für einen Taxibetrieb?', optionen:['Die Genehmigungsbehörde (z.B. Straßenverkehrsamt)','Die IHK','Das Finanzamt','Der TÜV'], richtig:0, erklaerung:'Die Konzession erteilt die Genehmigungsbehörde (Straßenverkehrsamt oder Ordnungsamt) – nicht die IHK!' },
+  { thema:'recht', frage:'Wie lange ist eine Taxigenehmigung maximal gültig?', optionen:['5 Jahre','10 Jahre','1 Jahr','Unbegrenzt'], richtig:0, erklaerung:'Nach § 13 PBefG werden Taxigenehmigungen für maximal 5 Jahre erteilt und müssen dann verlängert werden.' },
+  { thema:'recht', frage:'Was bedeutet Beförderungspflicht bei Taxis?', optionen:['Ein Taxi muss Fahrgäste im Pflichtfahrgebiet mitnehmen','Der Fahrgast muss immer zahlen','Das Taxi muss immer am Stand stehen','Der Fahrer muss Routen vorschlagen'], richtig:0, erklaerung:'Taxis unterliegen der Beförderungspflicht: Sie müssen Fahrgäste im Pflichtfahrgebiet befördern – außer bei gesetzlichen Ausnahmen.' },
+  { thema:'recht', frage:'Was ist das Pflichtfahrgebiet beim Taxi?', optionen:['Der Bereich, in dem das Taxi fahren muss, wenn es bestellt wird','Das Gebiet, in dem Taxis am günstigsten sind','Die Zone mit freier Preisgestaltung','Das Gebiet außerhalb der Stadtgrenzen'], richtig:0, erklaerung:'Das Pflichtfahrgebiet ist das festgelegte Einsatzgebiet des Taxis. Innerhalb muss das Taxi Fahrten annehmen.' },
+  { thema:'recht', frage:'Welches Mindestalter ist für Taxiunternehmer grundsätzlich vorgeschrieben?', optionen:['21 Jahre','18 Jahre','25 Jahre','Kein Mindestalter'], richtig:0, erklaerung:'Das PBefG sieht grundsätzlich 21 Jahre als Mindestalter vor.' },
+  { thema:'recht', frage:'Was ist die Berufszugangsverordnung (PBZugV)?', optionen:['Regelt die Voraussetzungen für den Zugang zum Personenbeförderungsgewerbe','Legt Tarife für Taxifahrten fest','Regelt die Fahrzeugzulassung','Bestimmt die Prüfungsgebühren'], richtig:0, erklaerung:'Die PBZugV legt fest, welche Anforderungen Taxiunternehmer an persönlicher, finanzieller und fachlicher Eignung erfüllen müssen.' },
+  { thema:'recht', frage:'Was bedeutet persönliche Zuverlässigkeit für einen Taxiunternehmer?', optionen:['Keine schwerwiegenden Verurteilungen, keine Insolvenz, keine schweren Verkehrsverstöße','Mindestens 5 Jahre Berufserfahrung als Fahrer','Besitz eines Meisterbriefs','Mitgliedschaft in einem Berufsverband'], richtig:0, erklaerung:'Persönliche Zuverlässigkeit bedeutet: kein Betrug, keine Gewaltdelikte, keine schwere Insolvenz in den letzten 5 Jahren.' },
+  { thema:'recht', frage:'Auf welchem Weg kann die IHK-Fachkundeprüfung ersetzt werden?', optionen:['Durch eine anerkannte kaufmännische Ausbildung oder 5 Jahre Führungserfahrung im Taxigewerbe','Durch 3 Jahre Fahrerfahrung','Durch einen Erste-Hilfe-Kurs','Durch Vorlage des P-Scheins'], richtig:0, erklaerung:'Alternativen zur Prüfung: anerkannte Ausbildung oder mindestens 5 Jahre als leitender Angestellter in einem Taxiunternehmen.' },
+  { thema:'recht', frage:'Was versteht man unter der Tarifpflicht im Taxigewerbe?', optionen:['Taxis müssen den behördlich festgesetzten Tarif einhalten','Taxis dürfen beliebige Preise verlangen','Nur Nachtfahrten sind tarifpflichtig','Der Tarif gilt nur für Fahrten über 10 km'], richtig:0, erklaerung:'Im Pflichtfahrgebiet gilt die Tarifpflicht: Der Fahrpreis wird durch einen amtlich genehmigten Taxitarif festgelegt – kein freies Verhandeln.' },
+  { thema:'recht', frage:'Darf ein Taxi außerhalb seines Pflichtfahrgebiets Fahrgäste aufnehmen?', optionen:['Nein – Fahrgäste dürfen nur im eigenen Pflichtfahrgebiet aufgenommen werden','Ja, überall in Deutschland','Nur in Nachbarstädten','Nur mit Sondergenehmigung'], richtig:0, erklaerung:'Die Aufnahme von Fahrgästen ist grundsätzlich nur im Pflichtfahrgebiet der Genehmigung zulässig (Rückkehrpflicht gilt für Mietwagen).' },
+  { thema:'recht', frage:'Was ist die Betriebspflicht im Taxigewerbe?', optionen:['Das Taxi muss zu den genehmigten Betriebszeiten einsatzbereit sein','Das Taxi muss 24 Stunden fahren','Der Unternehmer muss selbst fahren','Das Fahrzeug darf nie in der Werkstatt sein'], richtig:0, erklaerung:'Betriebspflicht (§ 21 PBefG): Der Unternehmer muss seinen Betrieb zu den genehmigten Zeiten aufrechterhalten.' },
+  { thema:'recht', frage:'Wann darf ein Taxi eine Beförderung ablehnen?', optionen:['Bei Überfüllung, Gefahr für Sicherheit oder Ordnung, oder wenn die Fahrt außerhalb des Pflichtfahrgebiets endet','Niemals','Nur nachts','Bei schlechtem Wetter'], richtig:0, erklaerung:'Ausnahmen von der Beförderungspflicht: kein Platz, Sicherheitsgefahr (betrunkener Fahrgast), Ziel liegt außerhalb des Pflichtfahrbereichs.' },
+  { thema:'recht', frage:'Was ist ein Mietwagen (§ 49 PBefG) im Unterschied zum Taxi?', optionen:['Mietwagen haben keine Tarifpflicht, keine Betriebspflicht und müssen nach jeder Fahrt zum Betriebssitz zurückkehren','Mietwagen sind günstiger als Taxis','Mietwagen dürfen keine Fahrgäste befördern','Mietwagen sind nur für Unternehmen'], richtig:0, erklaerung:'Mietwagen: kein Taxtarif, keine Betriebspflicht, Rückkehrpflicht zum Betriebssitz nach jeder Fahrt, Aufträge nur vorher telefonisch/elektronisch.' },
+  { thema:'recht', frage:'Welche drei persönlichen Voraussetzungen muss ein Taxiunternehmer erfüllen?', optionen:['Zuverlässigkeit, finanzielle Leistungsfähigkeit, Fachkunde','Führerschein, TÜV-Attest, Erste-Hilfe-Schein','Alter, Wohnort, Steuerunterlagen','Gewerbeanmeldung, Bankbürgschaft, Sprachkenntnisse'], richtig:0, erklaerung:'§ 13 PBefG: Zuverlässigkeit (persönlich), finanzielle Leistungsfähigkeit (wirtschaftlich) und Fachkunde (IHK-Prüfung oder Gleichwertiges).' },
+  { thema:'recht', frage:'Wie wird die finanzielle Leistungsfähigkeit eines Taxiunternehmers nachgewiesen?', optionen:['Durch Eigenkapital, Bankbürgschaft oder Bonitätsnachweis','Durch Vorlage des Steuerbescheids','Durch Unterschrift des Steuerberaters','Durch ein Girokonto mit Mindestguthaben'], richtig:0, erklaerung:'Finanzielle Leistungsfähigkeit: ausreichendes Eigenkapital oder gleichwertige Sicherheiten (Bürgschaft, Bankgarantie).' },
+  { thema:'recht', frage:'Was passiert, wenn ein Taxiunternehmer seine Genehmigung verliert?', optionen:['Er muss den Betrieb sofort einstellen','Er darf noch 3 Monate weiterfahren','Er erhält automatisch eine neue','Er kann auf Mietwagenverkehr umsteigen'], richtig:0, erklaerung:'Ohne gültige Genehmigung ist der Betrieb illegal. Der Betrieb muss sofort eingestellt werden.' },
+  { thema:'recht', frage:'Was ist der P-Schein?', optionen:['Die Fahrerlaubnis zur Fahrgastbeförderung (FzF) – Pflicht für jeden Taxifahrer','Die Genehmigung für den Taxibetrieb','Ein Parkausweis für Taxistände','Der Führerschein Klasse B'], richtig:0, erklaerung:'Der P-Schein (§ 48 FeV) ist die Fahrerlaubnis zur Fahrgastbeförderung. Jeder Taxifahrer braucht ihn zusätzlich zum normalen Führerschein.' },
+  { thema:'recht', frage:'Ab welchem Alter kann man den P-Schein erwerben?', optionen:['21 Jahre','18 Jahre','25 Jahre','16 Jahre'], richtig:0, erklaerung:'Der P-Schein kann ab 21 Jahren erworben werden. Es gibt Ausnahmen bei Berufsausbildung ab 19.' },
 ];
 
 // =====================================================
@@ -1206,9 +1101,22 @@ function shuffle(arr) {
   return a;
 }
 
+function shuffleAntworten(frage) {
+  const indices = [0, 1, 2, 3];
+  for (let i = indices.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [indices[i], indices[j]] = [indices[j], indices[i]];
+  }
+  return {
+    ...frage,
+    optionen: indices.map(i => frage.optionen[i]),
+    richtig: indices.indexOf(frage.richtig),
+  };
+}
+
 function startQuiz(themaId) {
   STATE.quizMode = themaId;
-  STATE.quizFragen = shuffle(themaId === 'alle' ? [...FRAGEN] : FRAGEN.filter(f => f.thema === themaId));
+  STATE.quizFragen = shuffle(themaId === 'alle' ? [...FRAGEN] : FRAGEN.filter(f => f.thema === themaId)).map(shuffleAntworten);
   STATE.quizIdx = 0;
   STATE.quizAntworten = [];
   STATE.quizDone = false;
