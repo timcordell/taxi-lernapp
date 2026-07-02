@@ -1,0 +1,19 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /users/{userId} {
+      // Users may only read their own document
+      allow read: if request.auth != null && request.auth.uid == userId;
+
+      // Users may create their own document but must not include `paid`
+      allow create: if request.auth != null
+        && request.auth.uid == userId
+        && !('paid' in request.resource.data);
+
+      // Users may update their own document but must not change `paid`
+      allow update: if request.auth != null
+        && request.auth.uid == userId
+        && !request.resource.data.diff(resource.data).affectedKeys().hasAny(['paid']);
+    }
+  }
+}
