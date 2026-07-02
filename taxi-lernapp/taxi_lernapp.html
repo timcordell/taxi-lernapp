@@ -735,6 +735,11 @@ body {
             <div class="q-title">Prüfungsinfos</div>
             <div class="q-sub">IHK-Überblick</div>
           </button>
+          <button class="quick-card" id="quick-wrong-card" onclick="startWrongQuiz()" style="display:none;">
+            <span class="q-icon">❌</span>
+            <div class="q-title">Falsch beantwortet</div>
+            <div class="q-sub" id="quick-wrong-sub">Fragen wiederholen</div>
+          </button>
         </div>
       </div>
 
@@ -1585,6 +1590,10 @@ let STATE = {
   themesTouched: [],     // theme ids with at least 1 answered question
   lastSessionPerfect: false,
   comebackDone: false,
+  // Falsch beantwortete Fragen (zum gezielten Wiederholen), gespeichert per Fragetext
+  wrongQuestions: [],
+  // Navigation: zuletzt geöffneter Screen, um beim Wiederöffnen dort weiterzumachen
+  currentScreen: 'home',
   // Quiz state
   quizMode: null,
   quizFragen: [],
@@ -1622,8 +1631,6 @@ function saveState() {
 // =====================================================
 // NAVIGATION
 // =====================================================
-let currentScreen = 'home';
-
 function showScreen(name) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
@@ -1632,12 +1639,26 @@ function showScreen(name) {
   if (navEl) navEl.classList.add('active');
   // Scroll to top
   document.querySelector('.screens').scrollTo(0, 0);
-  currentScreen = name;
+  STATE.currentScreen = name;
+  saveState();
+  renderActiveScreen();
+}
 
+// Rendert den Inhalt des aktuell aktiven Screens neu (z.B. nach Cloud-Sync oder beim
+// Wiederherstellen des zuletzt geöffneten Screens), ohne die Navigation zu verändern.
+function renderActiveScreen() {
+  const name = STATE.currentScreen;
   if (name === 'home') renderHome();
   if (name === 'lernen') renderLernen();
   if (name === 'stats') renderStats();
-  if (name === 'quiz' && !STATE.quizMode) renderQuizStart();
+  if (name === 'quiz') {
+    // Unfertiges Quiz fortsetzen statt immer neu zu starten (z.B. nach App-Neustart)
+    if (STATE.quizMode && !STATE.quizDone && STATE.quizFragen.length && STATE.quizIdx < STATE.quizFragen.length) {
+      renderFrage();
+    } else {
+      renderQuizStart();
+    }
+  }
 }
 
 // =====================================================
@@ -1670,6 +1691,12 @@ function renderHome() {
     ? `Tagesziel erreicht! ✅ (${dailyDone}/${dailyGoal})`
     : `${dailyDone} von ${dailyGoal} Fragen heute erledigt`;
   document.getElementById('daily-icon').textContent = dailyDone >= dailyGoal ? '🏆' : '📚';
+
+  // Falsch beantwortete Fragen (nur anzeigen, wenn welche vorhanden sind)
+  const wrongCard = document.getElementById('quick-wrong-card');
+  const wrongCount = STATE.wrongQuestions.length;
+  wrongCard.style.display = wrongCount > 0 ? '' : 'none';
+  document.getElementById('quick-wrong-sub').textContent = `${wrongCount} Fragen wiederholen`;
 
   // Topic overview
   const wrap = document.getElementById('home-topics');
@@ -1956,6 +1983,14 @@ function startQuiz(themaId) {
   renderFrage();
 }
 
+// Startet einen Modus erneut (z.B. Button "Nochmal") – berücksichtigt auch die
+// Sondermodi 'schwach' und 'falsch', die keine echten Themen-IDs sind.
+function restartQuiz(mode) {
+  if (mode === 'schwach') startWeakQuiz();
+  else if (mode === 'falsch') startWrongQuiz();
+  else startQuiz(mode);
+}
+
 function startWeakQuiz() {
   // Find topics with score < 70% or not attempted
   const weak = FRAGEN.filter(f => {
@@ -1968,7 +2003,21 @@ function startWeakQuiz() {
     return;
   }
   STATE.quizMode = 'schwach';
-  STATE.quizFragen = shuffle(weak);
+  STATE.quizFragen = shuffle(weak).map(shuffleAntworten);
+  STATE.quizIdx = 0;
+  STATE.quizAntworten = [];
+  STATE.quizDone = false;
+  showScreen('quiz');
+  renderFrage();
+}
+
+function startWrongQuiz() {
+  const wrong = STATE.wrongQuestions
+    .map(frage => FRAGEN.find(f => f.frage === frage))
+    .filter(Boolean);
+  if (wrong.length === 0) return;
+  STATE.quizMode = 'falsch';
+  STATE.quizFragen = shuffle(wrong).map(shuffleAntworten);
   STATE.quizIdx = 0;
   STATE.quizAntworten = [];
   STATE.quizDone = false;
@@ -2118,7 +2167,7 @@ function renderFrage() {
         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
       </button>
       <div class="quiz-top-info">
-        <div class="quiz-topic-badge">${STATE.quizMode === 'alle' ? 'Alle Themen' : STATE.quizMode === 'schwach' ? 'Schwächen üben' : (t ? t.name : '')}</div>
+        <div class="quiz-topic-badge">${STATE.quizMode === 'alle' ? 'Alle Themen' : STATE.quizMode === 'schwach' ? 'Schwächen üben' : STATE.quizMode === 'falsch' ? 'Falsch beantwortete Fragen' : (t ? t.name : '')}</div>
         <div class="quiz-counter-text">Frage ${idx + 1} von ${total}</div>
       </div>
       <div class="quiz-correct-badge">
@@ -2159,6 +2208,11 @@ function antworten(gewaehlt) {
   STATE.todayAnswered++;
   if (!STATE.themesTouched.includes(f.thema)) STATE.themesTouched.push(f.thema);
   if (richtig) { STATE.totalCorrect++; STATE.xp += 10; }
+
+  // Fehlerkartei: falsch beantwortete Fragen merken, gemeisterte wieder entfernen
+  const wrongIdx = STATE.wrongQuestions.indexOf(f.frage);
+  if (!richtig && wrongIdx === -1) STATE.wrongQuestions.push(f.frage);
+  if (richtig && wrongIdx !== -1) STATE.wrongQuestions.splice(wrongIdx, 1);
 
   // Visual feedback on buttons
   document.querySelectorAll('.quiz-opt-btn').forEach((b, i) => {
@@ -2217,6 +2271,7 @@ function naechste() {
     checkBadges();
     renderErgebnis();
   } else {
+    saveState(); // Position sofort sichern, damit ein Neustart der App hier fortsetzt
     checkBadges();
     renderFrage();
   }
@@ -2265,7 +2320,7 @@ function renderErgebnis() {
         <div style="color:#047857;font-size:13px;margin-top:4px;">Weiter so – du bist auf Kurs für die IHK-Prüfung!</div>
       </div>`}
       <div class="result-btn-row">
-        <button class="btn btn-primary" style="flex:1;" onclick="startQuiz('${STATE.quizMode || 'alle'}')">🔄 Nochmal</button>
+        <button class="btn btn-primary" style="flex:1;" onclick="restartQuiz('${STATE.quizMode || 'alle'}')">🔄 Nochmal</button>
         <button class="btn btn-ghost" style="flex:1;" onclick="renderQuizStart()">📋 Thema wählen</button>
       </div>
       <div style="margin-top:10px;">
@@ -2325,7 +2380,7 @@ function showXpToast(msg) {
 // =====================================================
 loadState();
 checkBadges({ silent: true }); // bestehende Nutzer rückwirkend für bereits Erreichtes belohnen, ohne Popup-Flut
-renderHome();
+showScreen(STATE.currentScreen || 'home'); // an der zuletzt geöffneten Stelle weitermachen (inkl. laufendem Quiz)
 </script>
 
 <!-- Firebase -->
@@ -2365,10 +2420,11 @@ async function loadFromCloud(uid) {
     const snap = await getDoc(doc(db, 'users', uid));
     if (snap.exists()) {
       const cloudData = snap.data();
-      // Cloud-Daten mit lokalem State zusammenführen (Cloud hat Vorrang)
+      // Cloud-Daten mit lokalem State zusammenführen (Cloud hat Vorrang, aber quiz-lokale
+      // Felder wie currentScreen/quizMode sind nie Teil von cloudData, siehe saveToCloud)
       Object.assign(STATE, cloudData);
       saveState(); // auch lokal sichern
-      renderHome();
+      renderActiveScreen();
     }
   } catch(e) { console.warn('Cloud-Laden fehlgeschlagen:', e); }
 }
@@ -2376,7 +2432,9 @@ async function loadFromCloud(uid) {
 // State in Firestore speichern
 async function saveToCloud(uid) {
   try {
-    const { quizMode, quizFragen, quizIdx, quizAntworten, quizDone, ...persistState } = STATE;
+    // Quiz-Fortschritt und aktueller Screen sind geräte-lokal (nicht cloud-synced),
+    // damit ein Login auf einem anderen Gerät nicht mitten in einem laufenden Quiz landet.
+    const { quizMode, quizFragen, quizIdx, quizAntworten, quizDone, currentScreen, ...persistState } = STATE;
     await setDoc(doc(db, 'users', uid), persistState, { merge: true });
   } catch(e) { console.warn('Cloud-Speichern fehlgeschlagen:', e); }
 }
