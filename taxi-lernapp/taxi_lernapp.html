@@ -580,6 +580,58 @@ body {
 }
 .xp-toast.show { transform: translateX(-50%) translateY(0); }
 
+/* ===== BADGES ===== */
+.badge-teaser-card {
+  background: linear-gradient(135deg, #FAF5FF, #F3E8FF);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  border: none;
+  width: 100%;
+  text-align: left;
+  font-family: inherit;
+}
+.badge-teaser-icons { display: flex; flex-shrink: 0; }
+.badge-teaser-icons span { font-size: 20px; margin-left: -9px; background: white; border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; box-shadow: 0 1px 3px rgba(0,0,0,0.15); }
+.badge-teaser-icons span:first-child { margin-left: 0; }
+.badge-teaser-info { flex: 1; min-width: 0; }
+.badge-teaser-title { font-size: 14px; font-weight: 700; color: #7E22CE; }
+.badge-teaser-sub { font-size: 12px; color: #9333EA; margin-top: 2px; }
+
+.badge-cat-title { font-size: 12px; font-weight: 700; color: var(--gray-400); text-transform: uppercase; letter-spacing: 0.5px; padding: 0 16px; margin: 16px 0 8px; }
+.badge-cat-title:first-child { margin-top: 0; }
+.badge-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 0 16px; }
+.badge-card { background: white; border-radius: var(--radius-sm); padding: 12px; box-shadow: var(--card-shadow); position: relative; display: flex; gap: 10px; align-items: flex-start; }
+.badge-card.locked { opacity: 0.6; }
+.badge-card.locked .b-icon { filter: grayscale(1); }
+.badge-card .b-icon { font-size: 24px; flex-shrink: 0; line-height: 1; }
+.badge-card .b-body { flex: 1; min-width: 0; }
+.badge-card .b-name { font-size: 12px; font-weight: 700; color: var(--gray-800); margin-bottom: 2px; }
+.badge-card .b-desc { font-size: 10.5px; color: var(--gray-500); line-height: 1.35; }
+.badge-card .b-lock { position: absolute; top: 8px; right: 8px; font-size: 11px; opacity: 0.6; }
+
+.badge-unlock-overlay {
+  position: fixed; inset: 0; background: rgba(17,24,39,0.65);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 2000; opacity: 0; pointer-events: none; transition: opacity 0.25s ease;
+  padding: 24px;
+}
+.badge-unlock-overlay.show { opacity: 1; pointer-events: auto; }
+.badge-unlock-card {
+  background: linear-gradient(160deg, #FFFFFF, #FAF5FF);
+  border-radius: 24px; padding: 32px 24px 24px; text-align: center; max-width: 320px; width: 100%;
+  transform: scale(0.85); transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+}
+.badge-unlock-overlay.show .badge-unlock-card { transform: scale(1); }
+.badge-unlock-eyebrow { font-size: 12px; font-weight: 800; color: #9333EA; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 10px; }
+.badge-unlock-icon { font-size: 62px; margin-bottom: 12px; }
+.badge-unlock-name { font-size: 19px; font-weight: 800; color: var(--gray-900); margin-bottom: 6px; }
+.badge-unlock-desc { font-size: 13px; color: var(--gray-500); margin-bottom: 22px; line-height: 1.5; }
+
 /* ===== MISC ===== */
 .divider { height: 1px; background: var(--gray-100); margin: 4px 0; }
 .spacer-sm { height: 8px; }
@@ -687,6 +739,17 @@ body {
       </div>
 
       <div class="home-section">
+        <button class="badge-teaser-card" onclick="showScreen('stats');setTimeout(()=>{const g=document.getElementById('badgeGrid');if(g)g.scrollIntoView({behavior:'smooth',block:'start'});},50);">
+          <div class="badge-teaser-icons" id="badge-teaser-icons"></div>
+          <div class="badge-teaser-info">
+            <div class="badge-teaser-title" id="badge-teaser-title">Abzeichen</div>
+            <div class="badge-teaser-sub" id="badge-teaser-sub">Leg los, um dein erstes Abzeichen freizuschalten</div>
+          </div>
+          <span style="font-size:18px;color:#9333EA;flex-shrink:0;">›</span>
+        </button>
+      </div>
+
+      <div class="home-section">
         <div class="home-section-title">Lernthemen</div>
         <div id="home-topics"></div>
       </div>
@@ -750,6 +813,13 @@ body {
       <div class="card" style="margin: 0 16px; padding: 0; overflow:hidden;">
         <div id="statsTopicList"></div>
       </div>
+
+      <div class="spacer"></div>
+      <div style="padding: 0 16px 8px; display:flex; align-items:center; justify-content:space-between;">
+        <div class="screen-title" style="font-size:17px;">Abzeichen</div>
+        <span class="pill pill-blue" id="badgeProgressCount">0/0</span>
+      </div>
+      <div id="badgeGrid"></div>
       <div class="spacer-lg"></div>
     </div>
 
@@ -833,6 +903,9 @@ body {
     </button>
   </nav>
 </div>
+
+<!-- Badge Unlock Overlay (bewusst außerhalb von #app, da renderPaywall/-Impressum/-Datenschutz #app komplett ersetzen) -->
+<div class="badge-unlock-overlay" id="badgeUnlockOverlay"></div>
 
 <script>
 // =====================================================
@@ -1507,6 +1580,11 @@ let STATE = {
   todayAnswered: 0,
   lastDay: '',
   paid: false,
+  // Badges / Gamification
+  badges: [],           // ids of unlocked badges
+  themesTouched: [],     // theme ids with at least 1 answered question
+  lastSessionPerfect: false,
+  comebackDone: false,
   // Quiz state
   quizMode: null,
   quizFragen: [],
@@ -1599,13 +1677,14 @@ function renderHome() {
   THEMEN.forEach(t => {
     const score = STATE.themaScores[t.id];
     const pct = score && score.gesamt > 0 ? Math.round((score.richtig / score.gesamt) * 100) : 0;
+    const count = FRAGEN.filter(f => f.thema === t.id).length;
     const color = !score ? 'var(--gray-300)' : pct >= 70 ? 'var(--success)' : pct >= 40 ? 'var(--warning)' : 'var(--danger)';
     const row = document.createElement('div');
     row.style.cssText = 'display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--gray-100);';
     row.innerHTML = `
       <span style="font-size:18px;width:24px;text-align:center;">${t.icon}</span>
       <div style="flex:1;">
-        <div style="font-size:13px;font-weight:600;color:var(--gray-700);margin-bottom:4px;">${t.name}</div>
+        <div style="font-size:13px;font-weight:600;color:var(--gray-700);margin-bottom:4px;">${t.name} <span style="font-size:11px;font-weight:600;color:var(--gray-400);">(${count})</span></div>
         <div class="pbar-wrap"><div class="pbar-fill" style="width:${pct}%;background:${color};"></div></div>
       </div>
       <span style="font-size:12px;font-weight:700;color:${color};min-width:34px;text-align:right;">${score ? pct + '%' : 'Neu'}</span>
@@ -1613,6 +1692,18 @@ function renderHome() {
     `;
     wrap.appendChild(row);
   });
+
+  // Badge-Teaser
+  const unlockedBadges = BADGES.filter(b => STATE.badges.includes(b.id));
+  const nextBadge = BADGES.find(b => !STATE.badges.includes(b.id));
+  document.getElementById('badge-teaser-title').textContent = `Abzeichen: ${unlockedBadges.length}/${BADGES.length}`;
+  document.getElementById('badge-teaser-sub').textContent = nextBadge
+    ? `Nächstes Ziel: ${nextBadge.icon} ${nextBadge.name} – ${nextBadge.desc}`
+    : 'Alle Abzeichen freigeschaltet – Glückwunsch! 🎉';
+  const iconsShown = unlockedBadges.length ? unlockedBadges.slice(-3) : BADGES.slice(0, 3);
+  document.getElementById('badge-teaser-icons').innerHTML = iconsShown
+    .map(b => `<span style="${unlockedBadges.length ? '' : 'filter:grayscale(1);opacity:0.5;'}">${b.icon}</span>`)
+    .join('');
 }
 
 function renderImpressum() {
@@ -1681,6 +1772,119 @@ function calcGlobalPct() {
   Object.values(STATE.themaScores).forEach(s => { richtig += s.richtig; gesamt += s.gesamt; });
   if (gesamt === 0) return 0;
   return Math.round((richtig / gesamt) * 100);
+}
+
+// =====================================================
+// BADGES / BELOHNUNGSSYSTEM
+//
+// Bewusst kuratiert statt inflationär: jedes Abzeichen ist an ein echtes
+// Lernverhalten geknüpft (Einstieg, Konstanz, Können, Ausdauer) statt an
+// beliebiges Klicken. Ziel: intrinsische Motivation stützen (Kompetenz-
+// erleben, Fortschritt sichtbar machen), nicht durch Punkte-Spam ersetzen.
+// =====================================================
+function masteredThemesCount(s) {
+  return THEMEN.filter(t => {
+    const sc = s.themaScores[t.id];
+    return sc && sc.gesamt >= 15 && (sc.richtig / sc.gesamt) >= 0.85;
+  }).length;
+}
+
+const BADGES = [
+  { id:'einstieg',      icon:'🎯', name:'Erste Schritte',   cat:'Einstieg',
+    desc:'10 Fragen beantwortet', check: s => s.totalAnswered >= 10 },
+  { id:'entdecker',     icon:'🗺️', name:'Entdecker',        cat:'Einstieg',
+    desc:'Alle 6 Themen mindestens einmal geübt', check: s => (s.themesTouched || []).length >= 6 },
+
+  { id:'streak3',       icon:'🔥', name:'3 Tage am Ball',   cat:'Konstanz',
+    desc:'3 Tage in Folge gelernt', check: s => s.streak >= 3 },
+  { id:'streak7',       icon:'🔥', name:'Eine Woche stark', cat:'Konstanz',
+    desc:'7 Tage in Folge gelernt', check: s => s.streak >= 7 },
+  { id:'streak30',      icon:'🔥', name:'Volle Kraft',      cat:'Konstanz',
+    desc:'30 Tage in Folge gelernt', check: s => s.streak >= 30 },
+
+  { id:'scharfschuetze',icon:'🎯', name:'Scharfschütze',    cat:'Können',
+    desc:'Eine Session mit min. 10 Fragen zu 100% richtig', check: s => s.lastSessionPerfect === true },
+  { id:'comeback',      icon:'💪', name:'Comeback',         cat:'Können',
+    desc:'„Schwächen üben"-Session mit min. 70% abgeschlossen', check: s => s.comebackDone === true },
+  { id:'kenner',        icon:'🥉', name:'Themen-Kenner',    cat:'Können',
+    desc:'1 Thema gemeistert (≥85%, min. 15 Fragen)', check: s => masteredThemesCount(s) >= 1 },
+  { id:'profi',         icon:'🥈', name:'Themen-Profi',     cat:'Können',
+    desc:'3 Themen gemeistert', check: s => masteredThemesCount(s) >= 3 },
+  { id:'meister',       icon:'🥇', name:'Themen-Meister',   cat:'Können',
+    desc:'Alle 6 Themen gemeistert', check: s => masteredThemesCount(s) >= 6 },
+
+  { id:'fleissig',      icon:'📚', name:'Fleißig',          cat:'Ausdauer',
+    desc:'100 Fragen insgesamt beantwortet', check: s => s.totalAnswered >= 100 },
+  { id:'marathon',      icon:'🏋️', name:'Marathon',         cat:'Ausdauer',
+    desc:'500 Fragen insgesamt beantwortet', check: s => s.totalAnswered >= 500 },
+  { id:'pruefungsreif', icon:'🎓', name:'Prüfungsreif',     cat:'Ausdauer',
+    desc:'Gesamtquote ≥80% bei min. 200 beantworteten Fragen', check: s => s.totalAnswered >= 200 && calcGlobalPct() >= 80 },
+];
+
+let badgeUnlockQueue = [];
+
+// silent=true unterdrückt das Unlock-Overlay (z.B. beim rückwirkenden Freischalten nach App-Update)
+function checkBadges(opts) {
+  opts = opts || {};
+  let unlockedNew = false;
+  BADGES.forEach(b => {
+    if (!STATE.badges.includes(b.id) && b.check(STATE)) {
+      STATE.badges.push(b.id);
+      unlockedNew = true;
+      if (!opts.silent) badgeUnlockQueue.push(b);
+    }
+  });
+  if (unlockedNew) saveState();
+  if (!opts.silent && badgeUnlockQueue.length) showNextBadgeUnlock();
+}
+
+function showNextBadgeUnlock() {
+  if (!badgeUnlockQueue.length) return;
+  const b = badgeUnlockQueue[0];
+  const overlay = document.getElementById('badgeUnlockOverlay');
+  overlay.innerHTML = `
+    <div class="badge-unlock-card">
+      <div class="badge-unlock-eyebrow">Neues Abzeichen freigeschaltet</div>
+      <div class="badge-unlock-icon">${b.icon}</div>
+      <div class="badge-unlock-name">${escapeHtml(b.name)}</div>
+      <div class="badge-unlock-desc">${escapeHtml(b.desc)}</div>
+      <button class="btn btn-primary btn-full" onclick="dismissBadgeUnlock()">Weiter 🎉</button>
+    </div>
+  `;
+  requestAnimationFrame(() => overlay.classList.add('show'));
+}
+
+function dismissBadgeUnlock() {
+  const overlay = document.getElementById('badgeUnlockOverlay');
+  overlay.classList.remove('show');
+  badgeUnlockQueue.shift();
+  setTimeout(() => { if (badgeUnlockQueue.length) showNextBadgeUnlock(); }, 300);
+}
+
+function renderBadgeGrid() {
+  const container = document.getElementById('badgeGrid');
+  if (!container) return;
+  const hdr = document.getElementById('badgeProgressCount');
+  if (hdr) hdr.textContent = `${STATE.badges.length}/${BADGES.length}`;
+  const cats = [...new Set(BADGES.map(b => b.cat))];
+  container.innerHTML = cats.map(cat => `
+    <div class="badge-cat-title">${cat}</div>
+    <div class="badge-grid">
+      ${BADGES.filter(b => b.cat === cat).map(b => {
+        const unlocked = STATE.badges.includes(b.id);
+        return `
+          <div class="badge-card ${unlocked ? '' : 'locked'}">
+            ${unlocked ? '' : '<span class="b-lock">🔒</span>'}
+            <div class="b-icon">${b.icon}</div>
+            <div class="b-body">
+              <div class="b-name">${escapeHtml(b.name)}</div>
+              <div class="b-desc">${escapeHtml(b.desc)}</div>
+            </div>
+          </div>
+        `;
+      }).join('')}
+    </div>
+  `).join('');
 }
 
 // =====================================================
@@ -1953,6 +2157,7 @@ function antworten(gewaehlt) {
   STATE.quizAntworten.push({ themaId: f.thema, richtig });
   STATE.totalAnswered++;
   STATE.todayAnswered++;
+  if (!STATE.themesTouched.includes(f.thema)) STATE.themesTouched.push(f.thema);
   if (richtig) { STATE.totalCorrect++; STATE.xp += 10; }
 
   // Visual feedback on buttons
@@ -2001,9 +2206,18 @@ function naechste() {
     });
     Object.entries(groups).forEach(([id, s]) => { STATE.themaScores[id] = s; });
     STATE.sessions++;
+
+    // Session-level Badge-Signale
+    const sessionTotal = STATE.quizAntworten.length;
+    const sessionRichtig = STATE.quizAntworten.filter(a => a.richtig).length;
+    STATE.lastSessionPerfect = sessionTotal >= 10 && sessionRichtig === sessionTotal;
+    STATE.comebackDone = STATE.quizMode === 'schwach' && sessionTotal > 0 && (sessionRichtig / sessionTotal) >= 0.7;
+
     saveState();
+    checkBadges();
     renderErgebnis();
   } else {
+    checkBadges();
     renderFrage();
   }
 }
@@ -2077,6 +2291,7 @@ function renderStats() {
   THEMEN.forEach((t, i) => {
     const score = STATE.themaScores[t.id];
     const pct = score && score.gesamt > 0 ? Math.round((score.richtig / score.gesamt) * 100) : 0;
+    const count = FRAGEN.filter(f => f.thema === t.id).length;
     const color = !score ? 'var(--gray-300)' : pct >= 70 ? 'var(--success)' : pct >= 40 ? 'var(--warning)' : 'var(--danger)';
     const row = document.createElement('div');
     row.className = 'stats-topic-row';
@@ -2084,13 +2299,15 @@ function renderStats() {
     row.innerHTML = `
       <div class="stats-topic-icon">${t.icon}</div>
       <div class="stats-topic-info">
-        <div class="stats-topic-name">${t.name}</div>
+        <div class="stats-topic-name">${t.name} <span style="font-size:11px;font-weight:600;color:var(--gray-400);">(${count})</span></div>
         <div class="pbar-wrap"><div class="pbar-fill" style="width:${pct}%;background:${color};"></div></div>
       </div>
       <div class="stats-topic-score" style="color:${color};">${score ? pct + '%' : '–'}</div>
     `;
     list.appendChild(row);
   });
+
+  renderBadgeGrid();
 }
 
 // =====================================================
@@ -2107,6 +2324,7 @@ function showXpToast(msg) {
 // INIT
 // =====================================================
 loadState();
+checkBadges({ silent: true }); // bestehende Nutzer rückwirkend für bereits Erreichtes belohnen, ohne Popup-Flut
 renderHome();
 </script>
 
