@@ -10,7 +10,7 @@
  */
 export const CONFIG = {
   // Google Cloud → APIs & Dienste → Anmeldedaten → OAuth-Client-ID (Webanwendung)
-  googleClientId: 'DEINE_GOOGLE_CLIENT_ID.apps.googleusercontent.com',
+  googleClientId: '1035710812660-c82i2d1e5er2lgfrs1icmokfmuiia968.apps.googleusercontent.com',
 
   // Microsoft Entra → App-Registrierungen → Anwendungs-ID (Client-ID)
   microsoftClientId: 'DEINE_MICROSOFT_CLIENT_ID',
