@@ -1,0 +1,11 @@
+/* Zusatzstile für Textseiten (Datenschutz) */
+.legal { padding-bottom: calc(var(--safe-bottom) + 40px); }
+.legal h1 { margin: 8px 0 0; font-size: 28px; font-weight: 800; }
+.legal h2 { margin: 0 0 10px; font-size: 19px; font-weight: 800; }
+.legal h3 { margin: 16px 0 6px; font-size: 16px; text-transform: none; letter-spacing: 0; color: var(--cream); }
+.legal p, .legal li { font-size: 16px; line-height: 1.55; }
+.legal p { margin: 0 0 10px; }
+.legal ul { margin: 0 0 10px; padding-left: 20px; }
+.legal li { margin-bottom: 6px; }
+.legal code { font-size: 14px; background: var(--surface-2); padding: 1px 6px; border-radius: 6px; word-break: break-all; }
+a.brand { color: var(--cream); text-decoration: none; }

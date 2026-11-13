@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://accounts.google.com/gsi/client; style-src 'self' 'unsafe-inline' https://accounts.google.com/gsi/style; font-src 'self'; img-src 'self' data: https://*.googleusercontent.com; connect-src 'self' https://tasks.googleapis.com https://oauth2.googleapis.com https://accounts.google.com https://graph.microsoft.com https://login.microsoftonline.com; frame-src https://accounts.google.com https://login.microsoftonline.com; base-uri 'self'; form-action 'self'">
+  <meta name="referrer" content="no-referrer">
+  <title>Scribe Tasks</title>
+  <meta name="description" content="Aufgaben diktieren oder tippen und in Microsoft To Do oder Google Tasks anlegen.">
+  <meta name="theme-color" content="#1B2A41">
+  <meta name="color-scheme" content="dark">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Scribe Tasks">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <link rel="preload" href="fonts/nunito-sans-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="fonts/nunito-sans-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="css/app.css">
+  <script type="module" src="js/app.js"></script>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <img src="icons/icon-192.png" alt="" width="32" height="32">
+      <span>Scribe Tasks</span>
+    </div>
+    <button id="btn-settings" class="icon-btn" type="button" aria-label="Einstellungen">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19.4 13a7.5 7.5 0 0 0 0-2l2.1-1.6-2-3.5-2.5 1a7.6 7.6 0 0 0-1.7-1L15 3.3h-4l-.4 2.6a7.6 7.6 0 0 0-1.7 1l-2.5-1-2 3.5L6.5 11a7.5 7.5 0 0 0 0 2l-2.1 1.6 2 3.5 2.5-1a7.6 7.6 0 0 0 1.7 1l.4 2.6h4l.4-2.6a7.6 7.6 0 0 0 1.7-1l2.5 1 2-3.5zM12 15.5a3.5 3.5 0 1 1 0-7 3.5 3.5 0 0 1 0 7z"/></svg>
+    </button>
+  </header>
+
+  <main id="main" class="main">
+    <div id="install-banner" class="banner" hidden>
+      <div>
+        <strong>Als App installieren</strong>
+        <p>Tippe auf <b>Teilen</b> <span class="share-icon" aria-hidden="true">⎙</span> → <b>Zum Home-Bildschirm</b>.
+          Hinweis: Safari und die installierte App haben getrennte Anmeldungen.</p>
+      </div>
+      <button class="icon-btn small" type="button" data-close="install-banner" aria-label="Hinweis schließen">✕</button>
+    </div>
+
+    <div id="auth-banner" class="banner banner-warn" hidden role="alert">
+      <div>
+        <strong>Anmeldung abgelaufen</strong>
+        <p>Tipp: Dein Text und die Liste sind gespeichert. Nach der Anmeldung einfach erneut auf „hinzufügen“ tippen.</p>
+        <button id="btn-reauth" class="btn btn-primary" type="button">Neu anmelden</button>
+      </div>
+    </div>
+
+    <button id="target-chip" class="chip" type="button"></button>
+
+    <section class="card input-card">
+      <label for="input" class="sr-only">Text diktieren oder tippen</label>
+      <textarea id="input" autofocus rows="6" enterkeyhint="done"
+        placeholder="z. B. „Ich muss morgen um 17 Uhr den Dienstplan erledigen, außerdem Freitag Bestellung prüfen und dann Mama anrufen“"></textarea>
+      <div class="input-foot">
+        <p class="hint">
+          <svg class="inline-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 14a3 3 0 0 0 3-3V5a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.9V21h2v-3.1a7 7 0 0 0 6-6.9z"/></svg>
+          Mikrofon-Taste der iPhone-Tastatur nutzen
+        </p>
+        <button id="btn-clear" class="text-btn" type="button">Leeren</button>
+        <button id="btn-mic" class="icon-btn mic" type="button" aria-label="Spracheingabe starten" aria-pressed="false" hidden>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 14a3 3 0 0 0 3-3V5a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.9V21h2v-3.1a7 7 0 0 0 6-6.9z"/></svg>
+        </button>
+      </div>
+      <p id="interim" class="interim" aria-live="polite"></p>
+    </section>
+
+    <button id="btn-parse" class="btn btn-primary btn-block" type="button">Aufgaben erkennen</button>
+
+    <section id="review" class="review" hidden aria-labelledby="review-title">
+      <h2 id="review-title" class="sr-only">Erkannte Aufgaben</h2>
+      <div class="review-head">
+        <label class="check-row">
+          <input type="checkbox" id="check-all">
+          <span>Alle auswählen</span>
+        </label>
+        <span id="review-count" class="muted"></span>
+      </div>
+      <ul id="task-list" class="task-list"></ul>
+      <button id="btn-add-manual" class="text-btn add-manual" type="button">+ Aufgabe ergänzen</button>
+    </section>
+
+    <footer class="site-footer">
+      <p><strong>Scribe Tasks</strong> erkennt in diktiertem oder getipptem Text mehrere Aufgaben mit Datum und Uhrzeit
+        und legt sie mit deinem eigenen Konto in Google Tasks oder Microsoft To Do an. Kostenlos, ohne Server, ohne Tracking.</p>
+      <p><a href="datenschutz.html">Datenschutzerklärung</a></p>
+    </footer>
+  </main>
+
+  <div id="action-bar" class="action-bar" hidden>
+    <div id="progress" class="progress" hidden>
+      <div class="progress-track"><div id="progress-fill" class="progress-fill"></div></div>
+      <span id="progress-label" class="progress-label"></span>
+    </div>
+    <button id="btn-send" class="btn btn-primary btn-block" type="button">0 hinzufügen</button>
+  </div>
+
+  <dialog id="settings" class="sheet" aria-labelledby="settings-title">
+    <div class="sheet-head">
+      <h2 id="settings-title">Einstellungen</h2>
+      <button class="icon-btn" type="button" data-close-dialog="settings" aria-label="Schließen">✕</button>
+    </div>
+
+    <section class="card">
+      <h3>Dienst</h3>
+      <div class="segmented" role="radiogroup" aria-label="Dienst">
+        <label><input type="radio" name="provider" value="microsoft"><span>Microsoft To Do</span></label>
+        <label><input type="radio" name="provider" value="google"><span>Google Tasks</span></label>
+      </div>
+    </section>
+
+    <section class="card">
+      <h3>Konto</h3>
+      <p id="config-warning" class="warn" hidden></p>
+      <p id="account-status" class="account-status"></p>
+      <div class="row">
+        <button id="btn-connect" class="btn btn-primary" type="button">Verbinden</button>
+        <button id="btn-disconnect" class="btn btn-ghost" type="button">Trennen</button>
+      </div>
+      <p id="ms-hint" class="hint">Firmen- oder Schulkonto? Dort kann ein Administrator die Zustimmung für fremde Apps blockieren. Dann hilft nur die IT – oder ein persönliches Microsoft-Konto.</p>
+      <p id="google-hint" class="hint">Google zeigt evtl. „App nicht überprüft“. Das ist bei privaten Test-Apps normal: „Erweitert“ → „Weiter zu Scribe“.</p>
+    </section>
+
+    <section class="card">
+      <h3>Zielliste</h3>
+      <div class="row">
+        <select id="list-select" aria-label="Zielliste"><option value="">– erst laden –</option></select>
+        <button id="btn-load-lists" class="btn btn-ghost" type="button">Laden</button>
+      </div>
+    </section>
+
+    <section class="card">
+      <h3>Standard-Uhrzeit</h3>
+      <p class="hint">Gilt für erkannte Aufgaben mit Datum, aber ohne Uhrzeit.</p>
+      <div class="row">
+        <input type="time" id="default-time" aria-label="Standard-Uhrzeit">
+        <button id="btn-no-default-time" class="btn btn-ghost" type="button">Keine</button>
+      </div>
+    </section>
+
+    <section class="card about">
+      <h3>Datenschutz</h3>
+      <p class="hint">Text, Entwürfe und Einstellungen bleiben auf diesem Gerät. Kein Server, kein Tracking.
+        Aufgaben gehen nur direkt an den gewählten Dienst.</p>
+      <p class="hint"><a href="datenschutz.html">Datenschutzerklärung</a></p>
+    </section>
+  </dialog>
+
+  <dialog id="summary" class="modal" aria-labelledby="summary-title">
+    <h2 id="summary-title">Fertig</h2>
+    <ul id="summary-list" class="summary-list"></ul>
+    <p id="summary-note" class="hint"></p>
+    <button class="btn btn-primary btn-block" type="button" data-close-dialog="summary">OK</button>
+  </dialog>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <template id="task-template">
+    <li class="task-card">
+      <label class="task-check"><input type="checkbox" aria-label="Aufgabe auswählen"></label>
+      <div class="task-body">
+        <textarea class="task-title" rows="1" aria-label="Titel" autocomplete="off" enterkeyhint="done"></textarea>
+        <div class="task-when">
+          <input class="task-date" type="date" aria-label="Datum">
+          <input class="task-time" type="time" aria-label="Uhrzeit">
+        </div>
+        <div class="task-status" hidden>
+          <span class="status-text"></span>
+          <button class="text-btn task-retry" type="button" hidden>Erneut senden</button>
+        </div>
+      </div>
+      <button class="icon-btn task-delete" type="button" aria-label="Aufgabe löschen">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 3h6l1 2h4v2H4V5h4zm-3 6h12l-1 12H7z"/></svg>
+      </button>
+    </li>
+  </template>
+</body>
+</html>
