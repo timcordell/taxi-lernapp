@@ -1,5 +1,5 @@
 // Automatisch erzeugt von scripts/precache.mjs – nicht von Hand bearbeiten.
-self.PRECACHE_VERSION = '7ae0cf29d8de';
+self.PRECACHE_VERSION = 'de047d61a058';
 self.PRECACHE_FILES = [
   "./",
   "./config.js",
