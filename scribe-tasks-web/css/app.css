@@ -267,6 +267,11 @@ dialog::backdrop { background: rgb(8 14 24 / .6); }
 .summary-list .n { display: inline-block; min-width: 2ch; font-weight: 800; }
 .modal .hint { margin-bottom: 18px; }
 
+/* ---------- Fußzeile / Links ---------- */
+a { color: var(--accent); font-weight: 700; text-underline-offset: 3px; }
+.site-footer { margin-top: 28px; padding: 0 4px; color: var(--cream-muted); font-size: 14px; }
+.site-footer p { margin: 0 0 8px; }
+
 /* ---------- Toast ---------- */
 .toast {
   position: fixed; left: 50%; z-index: 50;

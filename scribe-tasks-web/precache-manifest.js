@@ -1,9 +1,11 @@
 // Automatisch erzeugt von scripts/precache.mjs – nicht von Hand bearbeiten.
-self.PRECACHE_VERSION = '10320519a049';
+self.PRECACHE_VERSION = '667d386c07bc';
 self.PRECACHE_FILES = [
   "./",
   "./config.js",
   "./css/app.css",
+  "./css/legal.css",
+  "./datenschutz.html",
   "./fonts/nunito-sans-latin-400-normal.woff2",
   "./fonts/nunito-sans-latin-600-normal.woff2",
   "./fonts/nunito-sans-latin-700-normal.woff2",

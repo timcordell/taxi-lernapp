@@ -67,6 +67,27 @@ Branch `main`, Ordner `/ (root)`. Die Datei `.nojekyll` ist schon vorhanden.
      (für die Anmeldung per Redirect in der Home-Bildschirm-App)
 4. Client-ID in `config.js` bei `googleClientId` eintragen.
 
+### 2b. Google für alle Nutzer freigeben (Prüfung durch Google)
+
+Im Status „Testen“ können sich nur eingetragene Testnutzer anmelden. Damit sich **jeder** mit seinem
+Google-Konto anmelden kann, muss die App veröffentlicht und geprüft werden. Der Tasks-Zugriff zählt
+bei Google als „sensibler“ Bereich. Die Prüfung ist kostenlos und dauert meist einige Tage bis Wochen.
+
+1. **Domain bestätigen:** In der [Google Search Console](https://search.google.com/search-console)
+   die URL-Präfix-Property `https://timcordell.github.io/scribe-tasks/` mit der Methode **HTML-Datei**
+   anlegen. Die Datei `googleXXXX.html` wird ins Repo gelegt; danach bestätigen.
+2. **Branding** (Google Auth Platform): App-Name, Logo `icons/icon-512.png` (Google verlangt 120×120 px,
+   wird skaliert), Startseite `https://timcordell.github.io/scribe-tasks/`,
+   Datenschutzerklärung `https://timcordell.github.io/scribe-tasks/datenschutz.html`,
+   autorisierte Domain `timcordell.github.io`.
+3. **Zielgruppe:** „App veröffentlichen“ → In Produktion.
+4. **Prüfung beantragen:** Begründung für den Tasks-Bereich (Aufgaben anlegen und Duplikate prüfen) und
+   ein Video (z. B. als nicht gelistetes YouTube-Video), das die Anmeldung mit dem Zustimmungsbildschirm
+   und das Anlegen einer Aufgabe zeigt.
+
+Bis zur Freigabe sehen Nutzer „Google hat diese App nicht überprüft“ und können über
+„Erweitert → Weiter zu Scribe Tasks“ trotzdem fortfahren (begrenzte Nutzerzahl).
+
 ### 3. Microsoft Entra
 
 1. *Microsoft Entra ID → App-Registrierungen → Neue Registrierung*.

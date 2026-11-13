@@ -38,12 +38,14 @@ self.addEventListener('fetch', (event) => {
       fetch(request)
         .then((response) => {
           if (response.ok) {
+            // Jede Seite unter ihrer eigenen Adresse cachen (nicht alles als index.html)
             const copy = response.clone();
-            caches.open(CACHE).then((c) => c.put('./index.html', copy));
+            caches.open(CACHE).then((c) => c.put(request, copy));
           }
           return response;
         })
-        .catch(() => caches.match('./index.html', { ignoreSearch: true })),
+        .catch(async () => (await caches.match(request, { ignoreSearch: true }))
+          || caches.match('./index.html', { ignoreSearch: true })),
     );
     return;
   }

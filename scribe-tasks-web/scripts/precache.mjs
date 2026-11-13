@@ -6,7 +6,7 @@ import { dirname, join, relative, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
-const INCLUDE = ['index.html', 'config.js', 'manifest.webmanifest', 'css', 'js', 'vendor', 'fonts', 'icons'];
+const INCLUDE = ['index.html', 'datenschutz.html', 'config.js', 'manifest.webmanifest', 'css', 'js', 'vendor', 'fonts', 'icons'];
 const SKIP = /(\.map|\.d\.ts|LICENSE(\.txt)?|\.LICENSE|\.svg)$/;
 
 function walk(path) {
