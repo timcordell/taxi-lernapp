@@ -49,7 +49,7 @@ Die Client-IDs stehen in [`config.js`](config.js). Sie sind öffentlich und kein
 Ein Client-**Secret** wird nie gebraucht. Solange dort Platzhalter stehen, zeigt die App
 für den Dienst einen Hinweis.
 
-Im Folgenden ist `https://NUTZER.github.io/scribe-tasks/` die Pages-URL.
+Die Pages-URL ist `https://timcordell.github.io/scribe-tasks/`.
 
 ### 1. GitHub Pages
 
@@ -62,8 +62,8 @@ Branch `main`, Ordner `/ (root)`. Die Datei `.nojekyll` ist schon vorhanden.
 2. *OAuth-Zustimmungsbildschirm*: Nutzertyp „Extern“, Status „Testen“, eigene Google-Adresse
    als **Testnutzer** eintragen, Scope `…/auth/tasks` hinzufügen.
 3. *Anmeldedaten → OAuth-Client-ID → Webanwendung*:
-   - **Autorisierte JavaScript-Quellen:** `https://NUTZER.github.io` (nur der Ursprung, ohne Pfad)
-   - **Autorisierte Weiterleitungs-URIs:** `https://NUTZER.github.io/scribe-tasks/`
+   - **Autorisierte JavaScript-Quellen:** `https://timcordell.github.io` (nur der Ursprung, ohne Pfad)
+   - **Autorisierte Weiterleitungs-URIs:** `https://timcordell.github.io/scribe-tasks/`
      (für die Anmeldung per Redirect in der Home-Bildschirm-App)
 4. Client-ID in `config.js` bei `googleClientId` eintragen.
 
@@ -72,7 +72,7 @@ Branch `main`, Ordner `/ (root)`. Die Datei `.nojekyll` ist schon vorhanden.
 1. *Microsoft Entra ID → App-Registrierungen → Neue Registrierung*.
 2. Kontotypen: **Konten in einem beliebigen Organisationsverzeichnis und persönliche
    Microsoft-Konten**.
-3. Umleitungs-URI: Plattform **Single-Page-Application (SPA)**, `https://NUTZER.github.io/scribe-tasks/`.
+3. Umleitungs-URI: Plattform **Single-Page-Application (SPA)**, `https://timcordell.github.io/scribe-tasks/`.
 4. *API-Berechtigungen*: Microsoft Graph, delegiert: `Tasks.ReadWrite`, `User.Read`.
 5. Anwendungs-ID (Client-ID) in `config.js` bei `microsoftClientId` eintragen.
 
