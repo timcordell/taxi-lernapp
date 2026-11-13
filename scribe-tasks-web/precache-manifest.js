@@ -1,5 +1,5 @@
 // Automatisch erzeugt von scripts/precache.mjs – nicht von Hand bearbeiten.
-self.PRECACHE_VERSION = 'de047d61a058';
+self.PRECACHE_VERSION = '8acf77c0fa0c';
 self.PRECACHE_FILES = [
   "./",
   "./config.js",
@@ -15,6 +15,7 @@ self.PRECACHE_FILES = [
   "./icons/icon-192.png",
   "./icons/icon-512.png",
   "./icons/icon-maskable-512.png",
+  "./icons/logo-120.png",
   "./index.html",
   "./js/app.js",
   "./js/parser.js",

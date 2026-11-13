@@ -36,6 +36,8 @@ const jobs = [
   // iOS rundet selbst ab und mag keine Transparenz
   ['apple-touch-icon.png', 180, svg({ scale: 0.9, rounded: false })],
   ['favicon-32.png', 32, svg(), true],
+  // Logo für den Google-Zustimmungsbildschirm (quadratisch, 120×120)
+  ['logo-120.png', 120, svg({ scale: 0.9, rounded: false })],
 ];
 
 writeFileSync(join(out, 'icon.svg'), svg());
