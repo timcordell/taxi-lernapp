@@ -31,7 +31,7 @@ export function remove(key) {
 }
 
 const DEFAULT_SETTINGS = {
-  provider: 'microsoft',  // 'microsoft' | 'google'
+  provider: 'google',     // 'google' | 'microsoft'
   lists: {},               // { microsoft: {id, name}, google: {id, name} }
   defaultTime: '',         // '' = keine Standard-Uhrzeit, sonst 'HH:MM'
 };

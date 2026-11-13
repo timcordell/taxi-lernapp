@@ -250,6 +250,8 @@ dialog::backdrop { background: rgb(8 14 24 / .6); }
   transition: background-color .15s;
 }
 .segmented input:checked + span { background: var(--accent); color: var(--on-accent); }
+.segmented input:disabled + span { opacity: .5; cursor: default; }
+.segmented span[data-note]:not([data-note=""])::after { content: attr(data-note); display: block; font-size: 12px; font-weight: 600; }
 .segmented input:focus-visible + span { outline: 3px solid var(--cream); }
 .row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
 .row select { flex: 1 1 180px; min-width: 0; }

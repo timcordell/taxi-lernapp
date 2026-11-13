@@ -61,7 +61,16 @@ const state = {
   sending: false,
 };
 
-const provider = () => PROVIDERS[settings.provider] || microsoft;
+const provider = () => PROVIDERS[settings.provider] || google;
+
+// Dienste ohne Client-ID in config.js sind nicht wählbar → auf einen eingerichteten wechseln
+if (!provider().isConfigured()) {
+  const fallback = Object.keys(PROVIDERS).find((key) => PROVIDERS[key].isConfigured());
+  if (fallback) {
+    settings.provider = fallback;
+    saveSettings(settings);
+  }
+}
 const targetList = () => settings.lists?.[settings.provider] || null;
 const uid = () => (crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random().toString(16).slice(2)}`);
 
@@ -507,7 +516,12 @@ function fillListSelect() {
 
 function refreshSettingsUI() {
   const p = provider();
-  document.querySelectorAll('input[name="provider"]').forEach((r) => { r.checked = r.value === settings.provider; });
+  document.querySelectorAll('input[name="provider"]').forEach((r) => {
+    const configured = PROVIDERS[r.value].isConfigured();
+    r.checked = r.value === settings.provider;
+    r.disabled = !configured && r.value !== settings.provider;
+    r.nextElementSibling.dataset.note = configured ? '' : 'bald verfügbar';
+  });
 
   el.configWarning.hidden = p.isConfigured();
   el.configWarning.textContent = `Für ${p.label} ist noch keine Client-ID eingetragen (config.js). `
